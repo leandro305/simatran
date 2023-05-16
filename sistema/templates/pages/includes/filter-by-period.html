@@ -1,0 +1,101 @@
+{% extends '../modals/modal-dashboard.html' %}
+{% load static  %}
+
+{% comment %} variável modal número é para mudar a class do modal entre 1,2,3... p\ diferenciar um do outro {% endcomment %}
+{% block modal_number %}2{% endblock %}
+
+{% block cabecalho_modal %}
+<div class='controle-cabecalho-controle-por-periodo'>
+    <h5 class="modal-title">Filtro por período</h5>
+</div>
+{% endblock %}
+
+{% block corpo_modal %}
+<div class="controle-formulario-busca-por-periodo">
+    <form class="formulario-inline" id="formulario_filtro_por_periodo" action="{% url 'sistema:filtro_por_periodo' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group mx-sm-3 mb-2">
+            <select class="form-select seletor-filtrar-por-bairro">
+                <option value="dd/mm/aaaa">Dia/Mês/Ano</option>
+                <option value="mm/aaaa">Mês/Ano</option>
+                <option value="aaaa">Ano</option>
+            </select>
+            <br>
+            <br>
+            <div class="ipt-inline">
+                <label>Data Min:</label>
+                <input type="date" class="form-control input-selecionar-periodo" id="periodo-de" name="periodo-de" required>
+
+                <label>Data Máx:</label>
+                <input type="date" class="form-control input-selecionar-periodo" id="periodo-ate" name="periodo-ate" required>
+            </div>
+            <br>
+            <select class="form-select seletor-filtrar-por-bairro" name="bairro" multiple aria-label="multiple select example">
+                <option value="0">Todos os bairros</option>
+                <option class="option-subtitle" selected>Centro</option>
+                <option value="1">Bairro Centro</option>
+                <option class="option-subtitle" value="2">Zona Norte</option>
+                <option value="3">31 de Março</option>
+                <option value="4">Aeroporto</option>
+                <option value="5">Aparecida</option>
+                <option value="6">Bairro dos Estados</option>
+                <option value="7">São Francisco</option>
+                <option class="option-subtitle" value="8">Zona Sul</option>
+                <option value="9">13 de Setembro</option>
+                <option value="10">Calungá</option>
+                <option value="11">Governador Aquilíno Mota</option>
+                <option value="12">São Vincente</option>
+                <option value="13">Marechal Rondon - Bairro de uso militar</option>
+                <option class="option-subtitle" value="14">Zona Leste</option>
+                <option value="15">Caçarí</option>
+                <option value="16">Canarinho</option>
+                <option value="17">Paraviana</option>
+                <option value="18">São Pedro</option>
+                <option class="option-subtitle" value="19">Zona Oeste</option>
+                <option value="20">Asa Branca</option>
+                <option value="21">Alvorada</option>
+                <option value="22">Professora Araceli Souto Maior</option>
+                <option value="23">Bela Vista</option>
+                <option value="24">Buritis </option>
+                <option value="25">Caimbé </option>
+                <option value="26">Cambará</option>
+                <option value="27">Caranã </option>
+                <option value="28">Centenário </option>
+                <option value="29">Cinturão Verde</option>
+                <option value="30">Jardim Equatorial</option>
+                <option value="31">Senador Hélio Campos</option>
+                <option value="33">Jardim Caranã</option>
+                <option value="34">Jardim Primavera</option>
+                <option value="35">Jardim Floresta</option>
+                <option value="36">Jardim Tropical</option>
+                <option value="37">Jóquei Clube</option>
+                <option value="38">Liberdade</option>
+                <option value="39">Murilo Teixeira</option>
+                <option value="40">Mecejana</option>
+                <option value="41">Nova Canaã</option>
+                <option value="42">Nova Cidade</option>
+                <option value="43">Operário</option>
+                <option value="44">Pintolândia</option>
+                <option value="45">Piscicultura</option>
+                <option value="46">Pricumã</option>
+                <option value="47">Raiar do Sol</option>
+                <option value="48">Doutor Aírton Rocha</option>
+                <option value="49">Doutor Silvio Botelho</option>
+                <option value="50">Doutor Silvio Leite</option>
+                <option value="51">Santa Luzia</option>
+                <option value="52">Santa Tereza</option>
+                <option value="53">Tancredo Neves</option>
+                <option value="54">União</option>
+                <option value="55">Olímpico</option>
+                <option value="56">Laura Moreira</option>
+                <option value="57">São Bento</option>
+                <option value="58">Cidade Satélite</option>
+            </select>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block botao_enviar %}
+    <button class="btn btn-primary btn-filtrar-por-periodo" form="formulario_filtro_por_periodo">Filtrar</button>
+{% endblock %}

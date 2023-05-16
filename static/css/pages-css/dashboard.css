@@ -1,0 +1,97 @@
+.menu-top-map{
+    display: flex;
+    padding:0.5rem;
+}
+.dropdown{
+    margin:5px;
+}
+
+.option-subtitle{
+    background-color: rgb(206, 206, 206);
+}
+
+.container-fluid{
+    padding-left:1.5rem;
+}
+
+/* Sidebar lateral direita (gráficos,classificação,etc...) */
+.collapse:not(.show) {
+    display: none;
+}
+
+/* Deixar o mapa ocupar tudo quando a página for carregada */
+#div-row-map:not(.contrair-mapa){
+    width:100%;
+}
+.contrair-mapa{
+    width:70%;
+    float:left;
+}
+.contrair-mapa div {
+    height: 100% !important;
+}
+
+
+/* Sidebar lateral esquerda (map) */
+#div-row-map{
+    width:70%;
+    float:left;
+}
+
+/* Estilos do aside lateral */
+.cap-table-right{
+    text-indent: 5px;
+    color: blue;
+    font-weight: bold;
+}
+.table-aside-right{
+    font-weight: bold;
+    text-align: center;
+    font-size: smaller;
+    color:black;
+    margin: 0px 3px 3px 3px;
+}
+.table-aside-right tr th{
+    padding: 0.2rem;
+}
+.table-aside-right tr td{
+    padding: 0.2rem;
+
+    /* Limitar quant. de caracteres */
+    max-width: 11ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.thead-color{
+    background-color: #4e73df;
+    color: #fff;
+}
+
+.seletor-filtrar-por-bairro{
+    width: 100%;
+}
+
+.footer-copyright{
+    margin-top: 25%;
+}
+.ipt-inline{
+    display: inline;
+}
+
+/* P\ modal que vai se arrastar */
+.modal-header {
+    cursor: move;
+}
+/* .modal-dashboard.modal-backdrop{
+    display: none;
+}
+.modal-dashboard.modal{
+    bottom: inherit;
+} */
+.modal-backdrop{
+    display: none;
+}
+
+
+/* P\ elementos de modals */

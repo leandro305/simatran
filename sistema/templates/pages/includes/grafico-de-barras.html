@@ -1,0 +1,19 @@
+{% extends '../modals/modal-dashboard.html' %}
+{% load static %}
+
+{% block modal_number %}1{% endblock %}
+
+{% block cabecalho_modal %}
+    <div class="controle-modal-grafico-de-barras">
+        <h5 class="modal-title">Gráfico de barras do ano de 2022</h5>
+    </div>
+{% endblock %}
+
+{% block corpo_modal %}
+    <div class="controle-modal-filtro-por-periodo">
+        <img width="100%" src="{% static './imagens/graficos/repBar1.png' %}" alt="Gráfico de Barras">
+        <hr>
+        <h5>Previsão para 2023 de acordo com a Inteligência Artifícial</h5>
+        <img width="100%" src="{% static './imagens/graficos/repBar2.png' %}" alt="Gráfico de Barras">
+    </div>
+{% endblock %}
