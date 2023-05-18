@@ -99,7 +99,7 @@ class Views(View):
             # Pega os valores do formulário
             periodoDe = request.POST["periodo-de"]
             periodoAte = request.POST["periodo-ate"]
-            # bairro  = request.POST["bairro"]
+            bairro  = request.POST["bairro"]
 
             # Valida os valores do formulário
             #[...]
@@ -122,7 +122,7 @@ class Views(View):
             return render(request, 'pages/dashboard/dashboard.html', {'mapa_rr_html':mapa_rr_html, 'datatable': dt})
 
         if(request.method=="GET"):
-            return HttpResponse("vc está acessando esta página por GET!")
+            return HttpResponse("Vc está acessando esta página por GET!")
         
     #Vai receber uma carga de dados e vai se encarregar de separar somente latitude e longitude
     def _setLatitudeLongitude(self, dataLoad):
@@ -202,12 +202,13 @@ class Views(View):
         # Formatação p\ o caso yyyy em que faz uma busca entre um ano e outro
         if len(periodoDeSpt) == 1 and len(periodoAteSpt) == 1:
             periodosDeMesDia = ["01", "01"]
-            periodosAteMesDia = ["12", "31"]
-
             for x in periodosDeMesDia:
                 periodoDeSpt.append(x)
-            for x in periodosAteMesDia:
-                periodoAteSpt.append(x)
+            
+            dataAte = date(int(periodoAteSpt[0]), 12, 1)
+            last_date = dataAte.replace(day=monthrange(int(periodoAteSpt[0]), 12)[1])
+            last_date = str(last_date)
+            periodoAteSpt = last_date.split("-")
 
         filter = {
             'data_acidente': {
