@@ -22,5 +22,5 @@ Visão geral da aplicação:
 | Bruno Meno |  |  |
 | David Fontes |  |  |
 | Hudson |  |  |
-| Leandro Lobo |  |  |
+| Leandro Lobo | [@LeandroLobo](https://github.com/bigolho16)  | bigolho900@gmail.com |
 | Ângelo Gabriel |  |  |
