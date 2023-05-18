@@ -66,3 +66,15 @@ $("#formulario_filtro_por_periodo").on("submit", () => {
         return false;
     }
 });
+
+// Mostrar mensagem de aviso:
+$(".show-warning").on("click",()=>{
+    $(".mensagem-de-aviso").show();
+    setTimeout(function(){
+        $(".mensagem-de-aviso").hide(); 
+    }, 2000);
+});
+
+$(".close-warning-msg").on("click",()=>{
+    $(".mensagem-de-aviso").hide();
+});

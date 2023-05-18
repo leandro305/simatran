@@ -34,7 +34,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion ul-sidebar-lateral" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/dashboard">
                 <img width="100%" src="{% static './imagens/simatran-sf.png' %}" alt="Logo Simatran">
             </a>
 
@@ -43,7 +43,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="/dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -57,7 +57,7 @@
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
+            <li class="nav-item show-warning" data-togle="tooltip">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
@@ -74,7 +74,7 @@
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item">
+            <li class="nav-item show-warning">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fas fa-fw fa-wrench"></i>
@@ -102,7 +102,7 @@
             </div>
 
             <!-- Nav Item - Pages Collapse Menu (use a class 'active no <li> para mostrar cor branca dizendo que esta ativado'; e use class 'show' no div abaixo que tem class='collapse' para mostrar conteudo ao clicar) -->
-            <li class="nav-item">
+            <li class="nav-item show-warning">
                 <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
                     aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
@@ -124,15 +124,15 @@
             </li>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+            <li class="nav-item show-warning">
+                <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Gráficos</span></a>
             </li>
 
             <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
+            <li class="nav-item show-warning">
+                <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tabelas</span></a>
             </li>
@@ -222,8 +222,7 @@
                               </button>
                               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item btn-busca-por-periodo" data-toggle="collapse" href="#" role="button" aria-expanded="false" aria-controls="collapseExample">Por Período</a>
-                                <a class="dropdown-item" data-toggle="collapse" href="#form-busca-por-bairro" role="button" aria-expanded="false" aria-controls="collapseExample">Por Bairro</a>
-                                <a class="dropdown-item" href="#">Alguma coisa aqui</a>
+                                <a class="dropdown-item show-warning" data-toggle="collapse" href="#form-busca-por-bairro" role="button" aria-expanded="false" aria-controls="collapseExample">Por Bairro</a>
                               </div>
                             </div>
                         </div>
@@ -232,9 +231,7 @@
                                     Classificação:
                                   </button>
                                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                    <a class="dropdown-item act-nav-lat" data-toggle="collapse" href="#sidebar-right" role="button" aria-expanded="false" aria-controls="collapseExample">Trechos mais perigosos</a>
-                                    <a class="dropdown-item" href="#">Outra ação</a>
-                                    <a class="dropdown-item" href="#">Alguma coisa aqui</a>
+                                    <a class="dropdown-item show-warning" data-toggle="collapse" href="#" role="button" aria-expanded="false" aria-controls="collapseExample">Trechos mais perigosos</a> {% comment %} Para ativar a tabela na lateral basta adicionar 'act-nav-lat' na classe desta tag <a> e '#sidebar-right' no seu href!  {% endcomment %}
                             </div>
                         </div>
                         <div class="dropdown">
@@ -242,10 +239,9 @@
                             Gráficos:
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                            <a class="dropdown-item" data-toggle="collapse" href="#" role="button" aria-expanded="false" aria-controls="collapseExample">Eixos</a>
+                            <a class="dropdown-item show-warning" data-toggle="collapse" href="#" role="button" aria-expanded="false" aria-controls="collapseExample">Eixos</a>
 
-                            <a class="dropdown-item btn-graf-barras" href="#">Barras</a>
-                            <a class="dropdown-item" href="#">Alguma coisa aqui</a>
+                            <a class="dropdown-item show-warning" href="#">Barras</a> {% comment %} Para ativar as barras basta adicionar 'btn-graf-barras' na classe desta tag <a>  {% endcomment %}
                           </div>
                         </div>
                     </div>
@@ -407,6 +403,12 @@
                 </div>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    {% comment %} Modal de alerta {% endcomment %}
+                    <div class="alert alert-warning mensagem-de-aviso">
+                        <a href="#" class="close close-warning-msg">&times;</a>
+                        <strong>Em manutenção!</strong> No momento, este recurso pode não existir ou está em desenvolvimento!
+                    </div>
+
                     <div class="row" id="row-main">
 
                         {% comment %} {% for dt in datatable %}

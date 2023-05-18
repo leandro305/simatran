@@ -94,4 +94,21 @@
 }
 
 
-/* P\ elementos de modals */
+
+/* Modals: */
+.mensagem-de-aviso {
+    display: none;
+    position: absolute;
+    top: 05px;
+    right: 10px;
+}
+.alert{
+    display: none;
+}
+
+/* Bugs: */
+.input-group-append {
+    z-index: 0;
+}
+
+.sidebar { z-index: 0; } /* fiz bloquear as opções do menu lateral */

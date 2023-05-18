@@ -99,7 +99,7 @@ class Views(View):
             # Pega os valores do formulário
             periodoDe = request.POST["periodo-de"]
             periodoAte = request.POST["periodo-ate"]
-            bairro  = request.POST["bairro"]
+            # bairro  = request.POST["bairro"]
 
             # Valida os valores do formulário
             #[...]
