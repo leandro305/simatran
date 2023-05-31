@@ -1,0 +1,86 @@
+{% extends '../modals/modals.html' %}
+
+{% load static %}
+
+{% block modal_path %}viatura{% endblock %}
+{% block modal_sm_path %}viatura{% endblock %}
+
+{% block cabecalho_modal %}
+    <div class="controle-modal-grafico-de-barras">
+        <h5 class="titulos-h5">Viatura</h5>
+    </div>
+{% endblock %}
+
+{% block corpo_modal %}
+    <div class="container">
+        <table class="table table-hover tabela-viaturas">
+            <thead>
+            <tr class="bg-danger">
+                <th scope="col">cod.</th>
+                <th scope="col">VTR.</th>
+                <th scope="col">Ação</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% comment %} {% for v in viaturas %}
+                    <tr>
+                        <td>{{v.codigo_viatura}}</td>
+                        <td>{{v.nome_viatura}}</td>
+                        <td>
+                        <button type="button" class="btn btn-outline-secondary btn-sm btn-consultar-suprimentos" data-toggle="modal" data-target=".modal-sm-medicacao-ou-item" value="{{ v.codigo_viatura }}">Editar</button>
+                        <button type="button" class="btn btn-outline-danger btn-sm btn-excluir-suprimentos" value="{{ v.codigo_viatura }}">Excluir</button>
+                        </td>
+                    </tr>
+                {% endfor %} {% endcomment %}
+            </tbody>
+        </table>
+
+        <hr>
+        <div class="div-insercao-viaturas">
+            <div class="row">
+                <div class="col-sm">
+                    <label>Cod.</label>
+                    <input type="number" class="form-control form-control-sm" placeholder="" name="codigo_viatura">
+                </div>
+                <div class="col-sm">
+                    <label>VTR</label>
+                    <input type="text" class="form-control form-control-sm" placeholder="" name="viatura">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:5px;">
+                <div class="form-group col">
+                    <button type="submit" class="btn" id="btn-inserir-viatura">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block botao_enviar %}
+{% comment %} <button type="submit" class="btn" form="form-inserir-material">Salvar</button> {% endcomment %}
+{% endblock %}
+
+{% comment %} Modal-sm: {% endcomment %}
+{% block cabecalho_modal_sm %}
+<div >
+    <h5 class="titulos-h5">Edição da viatura</h5>
+</div>
+{% endblock %}
+
+{% block corpo_modal_sm %}
+<div class="row">
+    <div class="form-group col">
+        <label for="">Cod.</label>
+        <input type="number" class="form-control form-control-sm" placeholder="" name="codigo_viatura">
+    </div>
+    <div class="form-group col">
+        <label for="">VTR</label>
+        <input type="text" class="form-control form-control-sm" placeholder="" name="viatura">
+    </div>
+</div>
+{% endblock %}
+
+{% block botao_enviar_sm %}
+<button type="button" class="btn btn-sm btn-editar-viatura">Salvar</button>
+{% endblock %}
+{% comment %} Modal-sm. {% endcomment %}

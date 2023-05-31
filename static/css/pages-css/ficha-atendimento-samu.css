@@ -1,0 +1,153 @@
+
+* {
+    padding: 0.1px;
+    margin: 0.1px;
+}
+
+.titulos-h5{
+    color: red;
+}
+
+.formulario-ficha{
+    font-size: small !important;
+    padding: 3px;
+}
+
+
+.divs-inline{
+    display: inline-table;
+    /* width: 50%; */
+}
+
+/* .p1{
+
+}
+.p1.mostrar{
+
+} */
+
+.tabela-ocorrencias{
+    width: 100%;
+    height: 100%;
+    font-size: small;
+    border: 0.1px solid #ced4da !important;
+}
+.tabela-ocorrencias tr {
+    cursor: default;
+}
+.div-tabela-ocorrencias{
+    height: 100%;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+}
+
+.div-abaixo-tabela-ocorrencias{
+    /* float: right; */
+    /* width: 100%; */
+    display: block;
+}
+.div-tabela-ocorrencias-f{
+    height: 100%;
+    overflow: auto;
+}
+
+#time{
+    margin-top: revert !important;
+}
+
+.td-inline{
+    display: inline;
+}
+
+/* Diminuir tamanho do formulário do bootstrap */
+.form-control{
+    min-width: 100px !important;
+}
+/* .container{
+    background-color: #f8f9fa!important;
+} */
+
+.divs-situacoes-chamados{
+    float: right;
+}
+
+.div-conclusoes-chamados{
+    /* border: 0.1px solid #aeb0b1; */
+    /* background-color: #aeb0b1; */
+}
+
+.div-enviar-para{
+    width: 100%;
+}
+.div-enviar-para{
+    width: 100%;
+    display: flex;
+    aling-items: center;
+    justify-content: space-between;
+}
+/* .ipt-enviar-para{
+    width: 100%;
+} */
+
+.primeira-grande-linha{
+    height: 310.928px;
+}
+.primeira-grande-linha .col-sm{
+    border: 0.1px solid #ced4da;
+    padding-right: revert !important;
+    padding-left: revert !important;
+}
+.segunda-grande-linha .col-sm{
+    padding-right: revert !important;
+    padding-left: revert !important;
+}
+.col-sm{
+    /* border: 0.1px solid #ced4da; */
+}
+.segunda-grande-linha{
+    /* background-color: #f8f9fa!important; */
+    /* border: 0.1px solid #ced4da; */
+}
+.terceira-grande-linha .col-sm{
+    border: 0.1px solid #ced4da;
+}
+
+/* Large modal: */
+.container-large-modal .row .col-sm, .col-sm-1, .col-sm-2{
+    border: 0.1px solid #ced4da;
+}
+.container-large-modal{
+    font-size: small;
+}
+.terceira-grande-linha-modal-grande .col-sm{
+    border-right: none !important;
+    border-left: none !important;
+}
+.nona-grande-linha-modal-grande .col-sm {
+    border-right: none !important;
+    border-left: none !important;
+}
+
+.decima-grande-linha-modal-grande table {
+    font-size: small;
+}
+.decima-grande-linha-modal-grande table td {
+    position: relative;
+}
+.decima-grande-linha-modal-grande table td input {
+    position: absolute;
+    display: block;
+    top:0;
+    left:0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.decima-quarta-grande-linha-modal-grande table {
+    font-size: small;
+}
+/* Large modal. */

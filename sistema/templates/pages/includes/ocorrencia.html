@@ -1,0 +1,77 @@
+{% extends '../modals/modals.html' %}
+
+{% load static %}
+
+{% block modal_path %}ocorrencia{% endblock %}
+{% block modal_sm_path %}ocorrencia{% endblock %}
+
+{% block cabecalho_modal %}
+    <div class="">
+        <h5 class="titulos-h5">Ocorrência</h5>
+    </div>
+{% endblock %}
+
+{% block corpo_modal %}
+    <div class="container">
+        <table class="table table-hover tabela-ocorrencia">
+            <thead>
+            <tr class="bg-danger">
+                <th scope="col">cod.</th>
+                <th scope="col">Ocorrência</th>
+                <th scope="col">Ação</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <hr>
+        <div class="div-insercao-ocorrencia">
+            <div class="row">
+                <div class="col-sm">
+                    <label>Cod.</label>
+                    <input type="number" class="form-control form-control-sm" placeholder="" name="codigo">
+                </div>
+                <div class="col-sm">
+                    <label>Ocorrência</label>
+                    <input type="text" class="form-control form-control-sm" placeholder="" name="tipo">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:5px;">
+                <div class="form-group col">
+                    <button type="submit" class="btn" id="btn-inserir-ocorrencia">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block botao_enviar %}
+{% comment %} <button type="submit" class="btn" form="form-inserir-material">Salvar</button> {% endcomment %}
+{% endblock %}
+
+{% comment %} Modal-sm: {% endcomment %}
+{% block cabecalho_modal_sm %}
+<div >
+    <h5 class="titulos-h5">Edição da ocorrência</h5>
+</div>
+{% endblock %}
+
+{% block corpo_modal_sm %}
+<div class="row">
+    <div class="form-group col">
+        <label for="">Cod.</label>
+        <input type="number" class="form-control form-control-sm" placeholder="" name="codigo">
+    </div>
+    <div class="form-group col">
+        <label for="">Ocorrência</label>
+        <input type="text" class="form-control form-control-sm" placeholder="" name="tipo">
+    </div>
+</div>
+{% endblock %}
+
+{% block botao_enviar_sm %}
+<button type="button" class="btn btn-sm btn-editar-ocorrencia">Salvar</button>
+{% endblock %}
+{% comment %} Modal-sm. {% endcomment %}

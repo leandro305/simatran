@@ -1,3 +1,3 @@
 from djongo import models
 
-# [...]
+#

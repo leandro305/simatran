@@ -1,0 +1,77 @@
+{% extends '../modals/modals.html' %}
+
+{% load static %}
+
+{% block modal_path %}turno{% endblock %}
+{% block modal_sm_path %}turno{% endblock %}
+
+{% block cabecalho_modal %}
+    <div class="">
+        <h5 class="titulos-h5">Turno</h5>
+    </div>
+{% endblock %}
+
+{% block corpo_modal %}
+    <div class="container">
+        <table class="table table-hover tabela-turno">
+            <thead>
+            <tr class="bg-danger">
+                <th scope="col">cod.</th>
+                <th scope="col">Turno</th>
+                <th scope="col">Ação</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <hr>
+        <div class="div-insercao-turno">
+            <div class="row">
+                <div class="col-sm">
+                    <label>Cod.</label>
+                    <input type="number" class="form-control form-control-sm" placeholder="" name="codigo_turno">
+                </div>
+                <div class="col-sm">
+                    <label>Turno</label>
+                    <input type="text" class="form-control form-control-sm" placeholder="" name="turno">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:5px;">
+                <div class="form-group col">
+                    <button type="submit" class="btn" id="btn-inserir-turno">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block botao_enviar %}
+{% comment %} <button type="submit" class="btn" form="form-inserir-material">Salvar</button> {% endcomment %}
+{% endblock %}
+
+{% comment %} Modal-sm: {% endcomment %}
+{% block cabecalho_modal_sm %}
+<div >
+    <h5 class="titulos-h5">Edição do turno</h5>
+</div>
+{% endblock %}
+
+{% block corpo_modal_sm %}
+<div class="row">
+    <div class="form-group col">
+        <label for="">Cod.</label>
+        <input type="number" class="form-control form-control-sm" placeholder="" name="codigo_turno">
+    </div>
+    <div class="form-group col">
+        <label for="">Turno</label>
+        <input type="text" class="form-control form-control-sm" placeholder="" name="turno">
+    </div>
+</div>
+{% endblock %}
+
+{% block botao_enviar_sm %}
+<button type="button" class="btn btn-sm btn-editar-turno">Salvar</button>
+{% endblock %}
+{% comment %} Modal-sm. {% endcomment %}

@@ -1,0 +1,89 @@
+{% extends '../modals/modals.html' %}
+
+{% load static %}
+
+{% block modal_path %}categoria-ocorrencia{% endblock %}
+{% block modal_sm_path %}categoria-ocorrencia{% endblock %}
+
+{% block cabecalho_modal %}
+    <div class="">
+        <h5 class="titulos-h5">Categoria da ocorrência</h5>
+    </div>
+{% endblock %}
+
+{% block corpo_modal %}
+    <div class="container">
+        <table class="table table-hover tabela-categoria-ocorrencia">
+            <thead>
+            <tr class="bg-danger">
+                <th scope="col">Cod.</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Categ. Ocorrência</th>
+                <th scope="col">Ação</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <hr>
+        <div class="div-insercao-categoria-ocorrencia">
+            <div class="row">
+                <div class="col-sm">
+                    <label>Cod.</label>
+                    <input type="number" min="0" class="form-control form-control-sm" placeholder="" name="codigo">
+                </div>
+                <div class="col-sm">
+                    <label>Tipo</label>
+                    <select class="form-control form-control-sm" name="codigo_ocorrencia">
+                    </select>
+                </div>
+                <div class="col-sm">
+                    <label>Categ. Ocorrência</label>
+                    <input type="text" class="form-control form-control-sm" placeholder="" name="categoria_ocorrencia">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:5px;">
+                <div class="form-group col">
+                    <button type="submit" class="btn" id="btn-inserir-categoria-ocorrencia">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block botao_enviar %}
+{% comment %} <button type="submit" class="btn" form="form-inserir-material">Salvar</button> {% endcomment %}
+{% endblock %}
+
+{% comment %} Modal-sm: {% endcomment %}
+{% block cabecalho_modal_sm %}
+<div >
+    <h5 class="titulos-h5">Edição da Categ. Ocorrência</h5>
+</div>
+{% endblock %}
+
+{% block corpo_modal_sm %}
+<div class="row">
+    <div class="form-group col">
+        <label for="">Cod.</label>
+        <input type="number" min="0" class="form-control form-control-sm" placeholder="" name="codigo">
+    </div>
+    <div class="form-group col">
+        <label>Tipo</label>
+        <select class="form-control form-control-sm" name="codigo_ocorrencia">
+
+        </select>
+    </div>
+    <div class="form-group col">
+        <label for="">Categ. Ocorrência</label>
+        <input type="text" class="form-control form-control-sm" placeholder="" name="categoria_ocorrencia">
+    </div>
+</div>
+{% endblock %}
+
+{% block botao_enviar_sm %}
+<button type="button" class="btn btn-sm btn-editar-categoria-ocorrencia">Salvar</button>
+{% endblock %}
+{% comment %} Modal-sm. {% endcomment %}
