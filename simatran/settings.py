@@ -3,6 +3,7 @@ from pathlib import Path
 
 import mimetypes
 mimetypes.add_type("text/css", ".css", True)
+mimetypes.add_type("text/javascript", ".js", True)
 
 # import pymysql
 # pymysql.version_info = (1, 4, 3, "final", 0)
