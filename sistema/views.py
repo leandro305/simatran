@@ -1,21 +1,27 @@
 from datetime import datetime, tzinfo, timezone
+import json
 from typing import Any
 from django.shortcuts import render
 import pandas as pd
 import matplotlib.pyplot as plt
 import folium
 from folium.plugins import HeatMap
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from . import conn
 from django.views import View
 from datetime import date
 from calendar import monthrange
+from random import randint
+from bson import json_util
+import json
+from geopy.geocoders import Nominatim
 
 class Views(View):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.views = self
         self.mapa_rr : folium.Map()
+        self.db = conn.connection()
 
     def dashboard(self, request):
         #Instancia a própria class p\ poder usar os métodos
@@ -24,7 +30,7 @@ class Views(View):
 
         return render(request, 'pages/dashboard/dashboard.html', {'mapa_rr_html':mapa_rr_html})
 
-
+    # Função apenas de teste
     def geraGraficoPlot():
         # Comente e descomente para gerar a imagem de gráfico, apenas para testes
         #Dados p\ python se basear
@@ -40,6 +46,7 @@ class Views(View):
         plt.savefig("static/imagens/graficos/repPlot2.png")
         # pass
 
+    # Função apenas de teste
     def geraGraficoBarras():
         # Comente e descomente para gerar a imagem de gráfico, apenas para testes
         # meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
@@ -218,7 +225,596 @@ class Views(View):
         }
 
         db = conn.connection()
-        dbd = db['Acidentes_RR'].find(filter=filter)
+        dbd = db['simatran.Acidentes_RR'].find(filter=filter)
 
         return dbd
     
+
+    def viewfichaAtendimentoSamu(self, request):
+        numero_ocorrencia = self.getCodAleatorio()
+
+        #Mandar as ocorrências para página
+        ocorrencias = self.getAllOcorrencias()
+
+        return render(request, 'pages/dashboard/ficha-atendimento-samu.html', {"ocorrencias": ocorrencias, 'numero_ocorrencia': numero_ocorrencia})
+    
+    def registrarOcorrencia(self, request):
+        numero_ocorrencia = request.POST["numero_ocorrencia"]
+        telefone_ocorrencia = request.POST["telefone_ocorrencia"]
+        solicitante = request.POST["solicitante"]
+        tipo_ocorrencia = request.POST["tipo_ocorrencia"]
+        motivo_ou_queixa = request.POST["motivo_ou_queixa"]
+
+        # Formatação dos dados
+        # [...]
+
+        # Registrar os dados
+        ocorrencia = {
+            "numero_ocorrencia": numero_ocorrencia,
+            "telefone_ocorrencia" : telefone_ocorrencia,
+            "solicitante" : solicitante,
+            "tipo_ocorrencia" : tipo_ocorrencia,
+            "motivo_ou_queixa" : motivo_ou_queixa
+        }
+        self.setOcorrencia(ocorrencia)
+
+        return HttpResponseRedirect('/ficha-atendimento-samu?msg='+"Ocorrencia registrada com sucesso!")
+    
+    def selectEspecOcorrencia(self, request):
+        if request.method=="POST":
+            numero_ocorrencia = request.POST['numero_ocorrencia']
+
+            #Formatar os dados vindos da request
+            # [...]
+
+            #Buscar no banco
+            espec_ocorrencia = self.getOneOcorrencia(numero_ocorrencia)
+
+            espec_ocorrencia = self.parse_json_v2(espec_ocorrencia)
+
+            # print(espec_ocorrencia)
+            return JsonResponse(espec_ocorrencia, safe=False)
+            # pass
+        
+    def excluirOcorrencia(self, request):
+        if request.method=="POST":
+            numero_ocorrencia = request.POST['numero_ocorrencia']
+
+            # Formata o valor vindo do post
+            # [...]
+
+            # Excluir o valor no Banco
+            self.dropOcorrencia(numero_ocorrencia)
+
+            return JsonResponse({'status': 'deleted'})
+    
+    def editarOcorrencia(self, request):
+        if request.method=="POST":
+            numero_ocorrencia = request.POST['numero_ocorrencia']
+            data_ocorrencia = request.POST['data_ocorrencia']
+            endereco_ocorrencia = request.POST['endereco_ocorrencia'] #rua
+            bairro_ocorrencia = request.POST['bairro_ocorrencia']
+            municipio_ocorrencia = request.POST['municipio_ocorrencia']
+            num_end_ocorrencia = request.POST['numero_endereco_ocorrencia']
+
+            data_ocorrencia_spt = data_ocorrencia.split("-")
+
+            endereco = endereco_ocorrencia + ", " + num_end_ocorrencia + " - " + bairro_ocorrencia + ", " + municipio_ocorrencia + " - RR"
+
+            # Localiza latitude, longitude
+            locator = Nominatim(user_agent="simatran")
+            location = locator.geocode(endereco)
+
+            # print(data_ocorrencia + ' ' + endereco_ocorrencia + ' ' + bairro_ocorrencia + ' ' + municipio_ocorrencia + ' ' + num_end_ocorrencia)
+            # print(endereco)
+            # print(location.latitude)
+            # print(location.longitude)
+
+            #Adiciona na collection Acidentes_RR
+            data_ocorrencia = self.dataFormatoMongo(data_ocorrencia_spt[0], data_ocorrencia_spt[1], data_ocorrencia_spt[2])
+
+            ac_rr = {
+                "num_acidente": "",
+                "numero_ocorrencia": numero_ocorrencia,
+                "chv_localidade": "",
+                "data_acidente": data_ocorrencia,
+                "uf_acidente": "RR",
+                "ano_acidente": data_ocorrencia_spt[0],
+                "mes_acidente": data_ocorrencia_spt[1],
+                "mes_ano_acidente": data_ocorrencia_spt[1]+data_ocorrencia_spt[0],
+                "codigo_ibge": "",
+                "dia_semana": "",
+                "fase_dia": "",
+                "tp_acidente": "",
+                "cond_meteorologica": "NAO INFORMADO",
+                "end_acidente": endereco_ocorrencia,
+                "num_end_acidente": num_end_ocorrencia,
+                "cep_acidente": 0,
+                "bairro_acidente": bairro_ocorrencia,
+                "km_via_acidente": 0,
+                "latitude_acidente": location.latitude,
+                "longitude_acidente": location.longitude,
+                "hora_acidente": "",
+                "tp_rodovia": "NAO INFORMADO",
+                "cond_pista": "NAO INFORMADO",
+                "tp_cruzamento": "DESCONHECIDO",
+                "tp_pavimento": "NAO INFORMADO",
+                "tp_curva": "NAO INFORMADO",
+                "lim_velocidade": "NAO INFORMADO",
+                "tp_pista": "NAO INFORMADO",
+                "ind_guardrail": "NAO INFORMADO",
+                "ind_cantcentral": "NAO INFORMADO",
+                "ind_acostamento": "NAO INFORMADO",
+                "qtde_acidente": 1,
+                "qtde_acid_com_obitos": 0,
+                "qtde_envolvidos": "",
+                "qtde_feridosilesos": "",
+            }
+            
+            self.inserirAcidentesRR(ac_rr)
+
+            return HttpResponse('Inseridos com sucesso!')
+
+
+    def dataFormatoMongo(self, ano,mes,dia):
+        dt = datetime(int(ano), int(mes), int(dia), 0, 0, 0, tzinfo=timezone.utc)
+        return dt
+
+    def parse_json(self, data):
+        oc = []
+        for m in data:
+            oc.append(m)
+
+        return json.loads(json_util.dumps(oc[0]))
+    
+    def parse_json_v2(self, data):
+        oc = []
+        for m in data:
+            oc.append(m)
+
+        return json.loads(json_util.dumps(oc))
+
+    def setOcorrencia(self, ocorrencia):
+        self.db['simatran'].ocorrencias.insert_one(ocorrencia)
+    
+    def getAllOcorrencias(self):
+        ocorrencias = self.db['simatran'].ocorrencias.find({})
+        return ocorrencias
+    
+    def getOneOcorrencia(self, numero_ocorrencia):
+        ocorrencia = self.db['simatran'].especOcorrencia.find({"numero_ocorrencia": int(numero_ocorrencia)})
+        return ocorrencia
+    
+    def dropOcorrencia(self, numero_ocorrencia):
+        filter = {"numero_ocorrencia": numero_ocorrencia}
+        self.db['simatran'].ocorrencias.delete_one(filter=filter)
+
+    def getCodAleatorio(self):
+        return (randint(0,100000000))
+    
+    def alteracaoRelogio(self):
+        pass
+
+    def inserirAcidentesRR(self, dados):
+        self.db['simatran']['Acidentes_RR'].insert_one(dados)
+
+
+    # Td relacionado ao custo por ocorrência
+    def viewCustoPorOcorrencia(self, request):
+        # Pegar somente da data de hoje e jogar na página
+
+        # especOcorrenciaToday = self.selectEspecOcorrenciaByOneDate(str(date.today()))
+        especOcorrencia = self.selectAllEspecOcorrencia()
+
+        materials = self.selectMaterial(); materialstemp = self.selectMaterial()
+        materials = self.parse_json_v2(materials)
+
+        return render(request, 'pages/dashboard/custo-por-ocorrencia.html', {'especOcorrencia': especOcorrencia, 'materials': materials, 'materialstemp': materialstemp})
+
+    def inserirEspecOcorrencia(self, request):
+        numero_ocorrencia = request.POST['numero_ocorrencia']
+        ambulancia_ocorrencia = request.POST['ambulancia_ocorrencia']
+        data_ocorrencia = request.POST['data_ocorrencia']
+        turno_ocorrencia = request.POST['turno_ocorrencia']
+        categoria_ocorrencia = request.POST['categoria_ocorrencia']
+        tipo_ocorrencia = request.POST['tipo_ocorrencia']
+        
+        med_ou_item = request.POST['med_ou_item']
+        preco_med_ou_item = request.POST['preco_med_ou_item']
+        quant_med_ou_item = request.POST['quant_med_ou_item']
+        produto_quant_com_item = request.POST['produto_quant_com_item']
+
+        especOcorrencia = {
+            'numero_ocorrencia': int(numero_ocorrencia),
+            'ambulancia_ocorrencia':ambulancia_ocorrencia,
+            'data_ocorrencia':data_ocorrencia,
+            'turno_ocorrencia':turno_ocorrencia,
+            'categoria_ocorrencia':categoria_ocorrencia,
+            'tipo_ocorrencia':tipo_ocorrencia,
+            
+            'med_ou_item': int(med_ou_item),
+            'preco_med_ou_item':preco_med_ou_item,
+            'quant_med_ou_item':quant_med_ou_item,
+            'produto_quant_com_item':produto_quant_com_item
+        }
+        #Formatação dos campos
+        # [...]
+
+        # return HttpResponse(especOcorrencia)
+
+        #Inserir no respectivo db
+        self.insertEspecOcorrencia(especOcorrencia)
+
+        return HttpResponseRedirect('/custo-por-ocorrencia')
+
+        
+    def insertEspecOcorrencia(self, dados):
+        self.db['simatran.especOcorrencia'].insert_one(dados)
+
+    def selectAllEspecOcorrencia(self):
+        data = self.db['simatran']['especOcorrencia'].find({})
+        return data
+    
+    def selectEspecOcorrenciaByOneDate(self, date):
+        especOcorrencia = self.db['simatran']['especOcorrencia'].find({"data_ocorrencia": date})
+        return especOcorrencia
+    
+    def excluirEspecOcorrencia(self, request):
+        numero_ocorrencia = request.POST['numero_ocorrencia']
+        self.deleteEspecOcorrencia(numero_ocorrencia)
+        return JsonResponse({'status': 'deleted'})
+
+    def inserirMaterial(self, request):
+        nome_material = request.POST['nome_material']
+        valor_material = request.POST['valor_material']
+
+        # Formatação dos campos
+        # [...]
+
+        material = {
+            'codigo_material':self.getCodAleatorio(),
+            'nome_material':nome_material,
+            'valor_material':valor_material
+        }
+        
+        # Inserção no Db
+        self.insertMaterial(material)
+
+        # Voltar p\ página e mostrar que inseriu
+        return HttpResponseRedirect('/custo-por-ocorrencia')
+
+
+    def insertMaterial(self, material):
+        self.db['simatran']['material'].insert_one(material)
+
+    def selectMaterial(self):
+        materials = self.db['simatran']['material'].find({})
+        return materials
+    
+    def selectOneMaterial(self, codigo_material):
+        material = self.db['simatran'].material.find({"codigo_material":int(codigo_material)})
+        return material
+
+    def selectMaterialJs(self, request):
+        codigo_material = request.POST['codigo_material']
+
+        material = self.selectOneMaterial(codigo_material)
+
+        json_material = self.parse_json(material)
+
+        return JsonResponse(json_material)
+    
+    def deleteEspecOcorrencia(self, numero_ocorrencia):
+        filter = {"numero_ocorrencia": int(numero_ocorrencia)}
+        self.db['simatran'].especOcorrencia.delete_one(filter=filter)
+
+    def selectOneEspecOcorrencia(self, numero_ocorrencia):
+        filter = {"numero_ocorrencia": numero_ocorrencia}
+        return self.db['simatran'].especOcorrencia.find(filter)
+
+
+    def editarEspecOcorrencia(self, request):
+        # Do formulário das ocorrências
+        if (request.POST.get('numero_ocorrencia') is not None and request.POST.get("turno_ocorrencia") is not None and request.POST.get("ambulancia_ocorrencia") is not None and request.POST.get("categoria_ocorrencia") is not None and request.POST.get("tipo_ocorrencia")):
+            numero_ocorrencia = request.POST["numero_ocorrencia"]
+            data_ocorrencia = request.POST['data_ocorrencia']
+            turno_ocorrencia = request.POST["turno_ocorrencia"]
+            ambulancia_ocorrencia = request.POST["ambulancia_ocorrencia"]
+            categoria_ocorrencia = request.POST["categoria_ocorrencia"]
+            tipo_ocorrencia = request.POST["tipo_ocorrencia"]
+            
+            qr = {
+                "numero_ocorrencia": int(numero_ocorrencia)
+            }
+            mod = { "$set": {
+                    "data_ocorrencia":data_ocorrencia, "turno_ocorrencia":turno_ocorrencia, "ambulancia_ocorrencia": ambulancia_ocorrencia,
+                    "categoria_ocorrencia": categoria_ocorrencia, "tipo_ocorrencia": tipo_ocorrencia,
+                }
+            }
+            self.db['simatran'].especOcorrencia.update_one(qr, mod)
+
+            return HttpResponseRedirect('/custo-por-ocorrencia')
+        
+        # Do formulário dos suprimentos/medicações
+        elif (request.POST.get('numero_ocorrencia') is not None and request.POST.get("med_ou_item") is not None and request.POST.get("preco_med_ou_item") is not None and request.POST.get("quant_med_ou_item") is not None and request.POST.get("produto_quant_com_item")):
+            numero_ocorrencia = request.POST["numero_ocorrencia"]
+            med_ou_item = request.POST['med_ou_item']
+            preco_med_ou_item = request.POST["preco_med_ou_item"]
+            quant_med_ou_item = request.POST["quant_med_ou_item"]
+            produto_quant_com_item = request.POST["produto_quant_com_item"]
+            
+            qr = {
+                "numero_ocorrencia": int(numero_ocorrencia)
+            }
+            mod = { "$set": {
+                    "med_ou_item":int(med_ou_item), "preco_med_ou_item":preco_med_ou_item, "quant_med_ou_item": quant_med_ou_item,
+                    "produto_quant_com_item": produto_quant_com_item,
+                }
+            }
+            self.db['simatran'].especOcorrencia.update_one(qr, mod)
+
+            return HttpResponseRedirect('/custo-por-ocorrencia')
+    
+    # Crud das ambulâncias:
+    def viewAmbulancia(self):
+        pass
+    # Crud das ambulâncias.
+
+    # Crud dos suprimentos:
+    def editarMaterial(self, request):
+        codigo_material = request.POST['codigo_material']
+        nome_material = request.POST['nome_material']
+        valor_material = request.POST['valor_material']
+        
+        qr = {
+            "codigo_material": int(codigo_material)
+        }
+        mod = { "$set": {
+                "nome_material":nome_material, "valor_material":valor_material
+            }
+        }
+        self.db['simatran'].material.update_one(qr, mod)
+    
+        return JsonResponse({"status": "updated"})
+    
+    def excluirMaterial(self, request):
+        codigo_material = request.POST['codigo_material']
+
+        filter = {"codigo_material": int(codigo_material)}
+        self.db['simatran'].material.delete_one(filter=filter)
+
+        return JsonResponse({"status": "deleted"})
+    # Crud dos suprimentos.
+
+    def selectViaturasJS(self,request):
+        all_vtr = self.db['simatran'].viaturas.find({})
+        vtrs = self.parse_json_v2(all_vtr)
+        return JsonResponse(vtrs, safe=False)
+    
+    def selectViaturaJS(self, request):
+        codigo_viatura = request.POST['codigo_viatura']
+
+        vtr = self.db['simatran'].viaturas.find({'codigo_viatura': int(codigo_viatura)})
+
+        vtr = self.parse_json_v2(vtr)
+
+        return JsonResponse(vtr, safe=False)
+    
+    def inserirViaturaJS(self, request):
+        codigo_viatura = request.POST['codigo_viatura']
+        viatura = request.POST['viatura']
+
+        filter={
+            'codigo_viatura':int(codigo_viatura),
+            'viatura':viatura
+        }
+        self.db['simatran'].viaturas.insert_one(filter)
+
+        return JsonResponse({'status': 'inserted'})
+    
+    def excluirViaturaJS(self, request):
+        codigo_viatura = request.POST['codigo_viatura']
+
+        filter = {"codigo_viatura": int(codigo_viatura)}
+        self.db['simatran'].viaturas.delete_one(filter=filter)
+
+        return JsonResponse({"status": "deleted"})
+    
+    def editarViaturaJS(self, request):
+        cod_vtr_old = request.POST['cod_vtr_old']
+
+        codigo_viatura = request.POST['codigo_viatura']
+        viatura = request.POST['viatura']
+        
+        qr = {
+            "codigo_viatura": int(cod_vtr_old)
+        }
+        mod = { "$set": {
+                "codigo_viatura": int(codigo_viatura), "viatura":viatura
+            }
+        }
+        self.db['simatran'].viaturas.update_one(qr, mod)
+    
+        return JsonResponse({"status": "updated"})
+    
+    # Crud Turnos:
+    def selectTurnosJS(self, request):
+        all_turnos = self.db['simatran'].turnos.find({})
+
+        turnos = self.parse_json_v2(all_turnos)
+
+        return JsonResponse(turnos, safe=False)
+    
+    def inserirTurnoJS(self, request):
+        codigo_turno = request.POST['codigo_turno']
+        turno = request.POST['turno']
+
+        filter={
+            'codigo_turno':int(codigo_turno),
+            'turno':turno
+        }
+        self.db['simatran'].turnos.insert_one(filter)
+
+        return JsonResponse({'status': 'inserted'})
+    
+    def excluirTurnoJS(self, request):
+        codigo_turno = request.POST['codigo_turno']
+
+        filter = {"codigo_turno": int(codigo_turno)}
+        self.db['simatran'].turnos.delete_one(filter=filter)
+
+        return JsonResponse({"status": "deleted"})
+    
+    def selectTurnoJS(self, request):
+        codigo_turno = request.POST['codigo_turno']
+
+        turno = self.db['simatran'].turnos.find({'codigo_turno': int(codigo_turno)})
+
+        turno = self.parse_json_v2(turno)
+
+        return JsonResponse(turno, safe=False)
+    
+    def editarTurnoJS(self, request):
+        codigo_turno_antigo = request.POST['codigo_turno_antigo']
+
+        codigo_turno = request.POST['codigo_turno']
+        turno = request.POST['turno']
+        
+        qr = {
+            "codigo_turno": int(codigo_turno_antigo)
+        }
+        mod = { "$set": {
+                "codigo_turno": int(codigo_turno), "turno":turno
+            }
+        }
+        self.db['simatran'].turnos.update_one(qr, mod)
+    
+        return JsonResponse({"status": "updated"})
+    
+    # Crud Turnos.
+
+    # Crud Ocorrências:
+    def selectOcorrenciasJS(self, request):
+        ocorrencias = self.db['simatran'].ocorrencias.find({})
+        ocorrencias = self.parse_json_v2(ocorrencias)
+        return JsonResponse(ocorrencias, safe=False)
+    
+    def inserirOcorrenciaJS(self, request):
+        codigo = request.POST['codigo']
+        tipo = request.POST['tipo']
+
+        filter={
+            'codigo':int(codigo),
+            'tipo':tipo
+        }
+        self.db['simatran'].ocorrencias.insert_one(filter)
+
+        return JsonResponse({'status': 'inserted'})
+    
+    def selectOcorrenciaJS(self, request):
+        codigo = request.POST['codigo']
+
+        ocorrencia = self.db['simatran'].ocorrencias.find({'codigo': int(codigo)})
+
+        ocorrencia = self.parse_json_v2(ocorrencia)
+
+        return JsonResponse(ocorrencia, safe=False)
+    
+    def editarOcorrenciaJS(self, request):
+        codigo_ocorrencia_antigo = request.POST['codigo_ocorrencia_antigo']
+
+        codigo = request.POST['codigo']
+        tipo = request.POST['tipo']
+        
+        qr = {
+            "codigo": int(codigo_ocorrencia_antigo)
+        }
+        mod = { "$set": {
+                "codigo": int(codigo), "tipo":tipo
+            }
+        }
+        self.db['simatran'].ocorrencias.update_one(qr, mod)
+    
+        return JsonResponse({"status": "updated"})
+    
+    def excluirOcorrenciaJS(self, request):
+        codigo = request.POST['codigo']
+
+        filter = {"codigo": int(codigo)}
+        self.db['simatran'].ocorrencias.delete_one(filter=filter)
+
+        return JsonResponse({"status": "deleted"})
+    # Crud Ocorrências.
+
+    # Crud Cat. Ocorrencias:
+    def selectCategoriaOcorrenciasJS(self, request):
+        categoria_ocorrencias = self.db['simatran'].categoria_ocorrencias.find({})
+
+        categoria_ocorrencias = self.parse_json_v2(categoria_ocorrencias)
+        return JsonResponse(categoria_ocorrencias, safe=False)
+
+    def inserirCategoriaOcorrenciaJS(self, request):
+        codigo = request.POST['codigo']
+        codigo_ocorrencia = request.POST['codigo_ocorrencia']
+        categoria_ocorrencia = request.POST['categoria_ocorrencia']
+
+        # Vincular ocorrencia c/ Categoria Ocorrência
+        ocorrencia = self.db['simatran'].ocorrencias.find({'codigo': int(codigo_ocorrencia)})
+
+        ocorrencia = self.parse_json_v2(ocorrencia)
+
+        filter={
+            'codigo':int(codigo),
+            'ocorrencia': {
+                'tipo': ocorrencia[0]['tipo'],
+                'codigo': ocorrencia[0]['codigo']
+            },
+            'categoria_ocorrencia':categoria_ocorrencia
+        }
+
+        self.db['simatran'].categoria_ocorrencias.insert_one(filter)
+
+        return JsonResponse({'status': 'inserted'})
+
+    def excluirCategoriaOcorrenciaJS(self, request):
+        codigo = request.POST['codigo']
+
+        filter = {"codigo": int(codigo)}
+        self.db['simatran'].categoria_ocorrencias.delete_one(filter=filter)
+
+        return JsonResponse({"status": "deleted"})
+    
+    def selectCategoriaOcorrenciaJS(self, request):
+        codigo = request.POST['codigo']
+        ocorrencia = self.db['simatran'].categoria_ocorrencias.find({'codigo': int(codigo)})
+        ocorrencia = self.parse_json_v2(ocorrencia)
+        return JsonResponse(ocorrencia, safe=False)
+    
+    def editarCategoriaOcorrenciaJS(self, request):
+        codigo_categoria_ocorrencia_antigo = request.POST['codigo_categoria_ocorrencia_antigo']
+
+        codigo = request.POST['codigo']
+        categoria_ocorrencia = request.POST['categoria_ocorrencia']
+        
+        codigo_ocorrencia = request.POST['codigo_ocorrencia']
+
+        ocorrencia = self.db['simatran'].ocorrencias.find({'codigo': int(codigo_ocorrencia)})
+        ocorrencia = self.parse_json_v2(ocorrencia)
+
+
+        qr = {
+            "codigo": int(codigo_categoria_ocorrencia_antigo)
+        }
+        mod = { "$set": {
+                "codigo": int(codigo),
+                "categoria_ocorrencia":categoria_ocorrencia,
+                "ocorrencia": {
+                    "tipo": ocorrencia[0]['tipo'],
+                    "codigo": ocorrencia[0]['codigo']
+                }
+            }
+        }
+        self.db['simatran'].categoria_ocorrencias.update_one(qr, mod)
+    
+        return JsonResponse({"status": "updated"})
+    # Crud Cat. Ocorrencias.

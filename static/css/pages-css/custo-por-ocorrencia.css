@@ -1,0 +1,71 @@
+* {
+    padding: 0.1px;
+    margin: 0.1px;
+}
+#time {
+    margin-top: revert !important;
+}
+.titulos-h5 {
+    margin-top: 7px;
+    color: red;
+}
+
+.dv-btn-register-items-by-occurrences button{
+    margin: 5px;
+}
+
+.child-1-col-1-row{
+    border: 0.1px solid #ced4da;
+    padding: 10px;
+}
+
+.tabela-ocorrencias{
+    font-size: small;
+}
+
+/* Modals */
+.tabela-edicao-medicamento input {
+    top: 0;
+    left: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    border: none;
+    padding: 10px ;
+    box-sizing: border-box;
+}
+.tabela-edicao-medicamento select {
+    top: 0;
+    left: 0;
+    margin: 0;
+    height: 100% !important;
+    width: 100% !important;
+    border: none !important;
+    padding: 10px !important;
+    box-sizing: border-box;
+}
+.div-tabela-ocorrencias {
+    display: inline-block;
+    height: 510px;
+    overflow: auto;
+}
+.div-tabela-ocorrencias table {
+    height: 100%;
+}
+
+.div-caixa-ferramentas svg, span{
+    vertical-align: middle;
+}
+
+.add-more-supplies-button {
+    float: right;
+}
+.add-more-supplies-button svg, span{
+    vertical-align: middle;
+}
+
+.div-caixa-ferramentas button{
+    /* margin-right: 5px; */
+    float: right;
+    margin: 1px;
+}

@@ -1,0 +1,1421 @@
+{% load static %}
+
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Ocorrencias</title>
+
+    <!-- Carregando Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{% static 'css/pages-css/ficha-atendimento-samu.css' %}" crossorigin="anonymous">
+</head>
+<body>
+    <!-- Image and text -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="{% static './imagens/logo-samu.png' %}" width="120" height="70" class="d-inline-block align-top" alt="">
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Solicitante<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Paciente</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Link0
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Link1</a>
+                <a class="dropdown-item" href="#">Link1.1</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Link1.2</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Link1</a>
+            </li>
+            </ul>
+
+            <svg style="color:#dc3545;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-clock-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+            </svg>
+            <p id="time"></p>
+        </div>
+    </nav>
+    
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm"></div>
+            <div class="col-sm">
+                <div class="divs-situacoes-chamados">
+                    <button type="button" class="btn btn-secondary btn-sm">Trote</button>
+                    
+                    <button type="button" class="btn btn-secondary btn-sm">Regulação</button>
+                    
+                    <button type="button" class="btn btn-secondary btn-sm">Engano</button>
+                    
+                    <button type="button" class="btn btn-secondary btn-sm">Informações</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row primeira-grande-linha">
+            <div class="col-sm">
+                <h5 class="titulos-h5">Solicitante</h5>
+
+                <form action="{% url 'sistema:registrar-ocorrencias' %}" method="POST" class="formulario-ficha">
+                    {% csrf_token %}
+                    <div>
+                        {% comment %} Exemplo da linha (Referência) {% endcomment %}
+                        <div class="p1">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="">Número da ocorrência</label>
+                                    <input type="email" class="form-control form-control-sm" placeholder="" name="numero_ocorrencia" value="{{numero_ocorrencia}}" readonly>
+                                </div>
+                                <div class="form-group col-md-6">
+                                        <label >Telefone da ocorrência</label>
+                                        <input type="text" class="form-control form-control-sm" placeholder="" name="telefone_ocorrencia">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="">Solicitante</label>
+                                    <input type="text" class="form-control form-control-sm" value="" placeholder="Solicitante" name="solicitante">
+                                </div>
+                                <div class="col">
+                                    <label >Tipo</label>
+                                    <input type="text" class="form-control form-control-sm" placeholder="Tipo de ocorrência" name="tipo_ocorrencia">
+                                </div>
+                                <div class="col">
+                                    <label >M/Q</label>
+                                    <textarea class="form-control form-control-sm" placeholder='Motivo / Queixa' name="motivo_ou_queixa"></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Registrar</button>
+
+                        </div>
+                        {% comment %} Exemplo da linha (referência) {% endcomment %}
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-sm">
+                <div class="div-tabela-ocorrencias">
+                    <div class="div-tabela-ocorrencias-f">
+                        
+                    <table class="table table-hover tabela-ocorrencias">
+                        <thead>
+                        <tr class="bg-danger">
+                            <th scope="col">Ocorrencia</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Veiculo</th>
+                            <th>Ação</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for o in ocorrencias %}
+                                <tr>
+                                    <td>{{ o.numero_ocorrencia }}</td>
+                                    <td>{{ o.tipo_ocorrencia }}</td>
+                                    <td></td>
+                                    <td class="">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm btn-edicao-ocorrencia" data-toggle="modal" data-target=".bd-example-modal-lg" value="{{ o.numero_ocorrencia }}">Editar</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm btn-excluir-ocorrencia" value="{{ o.numero_ocorrencia }}">Excluir</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row segunda-grande-linha">
+            <div class="col-sm"></div>
+            {% comment %} <div class="col-sm"></div> {% endcomment %}
+            <div class="col-sm">
+            <div class="div-abaixo-tabela-ocorrencias">
+                <button type="button" class="btn btn-secondary btn-sm">Pós veículo</button>
+                <button type="button" class="btn btn-secondary btn-sm">Pós ocorrência</button>
+            </div>
+            </div>
+        </div>
+
+        <div class="row terceira-grande-linha">
+            <div class="col-sm">
+                <h5 class="titulos-h5">Localização da ocorrência</h5>
+
+                <form action="" method="POST" class="formulario-ficha">
+                    {% csrf_token %}
+                    <div>
+                        <div class="p1">
+                            <div class="row">
+                                <div class="col">
+                                <label for="" class="col-form-label">Município</label>
+                                <select class="form-control form-control-sm"><option>Boa Vista</option></select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <label for="">Bairro</label>
+                                    <select class="form-control form-control-sm">
+                                        <option>*** SELECIONE ***</option>
+                                        <option class="option-subtitle" selected>Centro</option>
+                                        <option value="Bairro Centro">Bairro Centro</option>
+                                        <option class="option-subtitle" value="2">Zona Norte</option>
+                                        <option value="31 de Março">31 de Março</option>
+                                        <option value="Aeroporto">Aeroporto</option>
+                                        <option value="Aparecida">Aparecida</option>
+                                        <option value="Bairro dos Estados">Bairro dos Estados</option>
+                                        <option value="São Francisco">São Francisco</option>
+                                        <option class="option-subtitle" value="8">Zona Sul</option>
+                                        <option value="13 de Setembro">13 de Setembro</option>
+                                        <option value="Calungá">Calungá</option>
+                                        <option value="Governador Aquilíno Mota">Governador Aquilíno Mota</option>
+                                        <option value="São Vincente">São Vincente</option>
+                                        <option value="Marechal Rondon - Bairro de uso militar">Marechal Rondon - Bairro de uso militar</option>
+                                        <option class="option-subtitle" value="14">Zona Leste</option>
+                                        <option value="Caçarí">Caçarí</option>
+                                        <option value="Canarinho">Canarinho</option>
+                                        <option value="Paraviana">Paraviana</option>
+                                        <option value="São Pedro">São Pedro</option>
+                                        <option class="option-subtitle" value="19">Zona Oeste</option>
+                                        <option value="Asa Branca">Asa Branca</option>
+                                        <option value="Alvorada">Alvorada</option>
+                                        <option value="Professora Araceli Souto Maior">Professora Araceli Souto Maior</option>
+                                        <option value="Bela Vista">Bela Vista</option>
+                                        <option value="Buritis">Buritis </option>
+                                        <option value="Caimbé">Caimbé </option>
+                                        <option value="Cambará">Cambará</option>
+                                        <option value="Caranã">Caranã </option>
+                                        <option value="Centenário">Centenário </option>
+                                        <option value="Cinturão Verde">Cinturão Verde</option>
+                                        <option value="Jardim Equatorial">Jardim Equatorial</option>
+                                        <option value="Senador Hélio Campos">Senador Hélio Campos</option>
+                                        <option value="Jardim Caranã">Jardim Caranã</option>
+                                        <option value="Jardim Primavera">Jardim Primavera</option>
+                                        <option value="Jardim Floresta">Jardim Floresta</option>
+                                        <option value="Jardim Tropical">Jardim Tropical</option>
+                                        <option value="Jóquei Clube">Jóquei Clube</option>
+                                        <option value="Liberdade">Liberdade</option>
+                                        <option value="Murilo Teixeira">Murilo Teixeira</option>
+                                        <option value="Mecejana">Mecejana</option>
+                                        <option value="Nova Canaã">Nova Canaã</option>
+                                        <option value="Nova Cidade">Nova Cidade</option>
+                                        <option value="Operário">Operário</option>
+                                        <option value="Pintolândia">Pintolândia</option>
+                                        <option value="Piscicultura">Piscicultura</option>
+                                        <option value="Pricumã">Pricumã</option>
+                                        <option value="Raiar do Sol">Raiar do Sol</option>
+                                        <option value="Doutor Aírton Rocha">Doutor Aírton Rocha</option>
+                                        <option value="Doutor Silvio Botelho">Doutor Silvio Botelho</option>
+                                        <option value="Doutor Silvio Leite">Doutor Silvio Leite</option>
+                                        <option value="Santa Luzia">Santa Luzia</option>
+                                        <option value="Santa Tereza">Santa Tereza</option>
+                                        <option value="Tancredo Neves">Tancredo Neves</option>
+                                        <option value="União">União</option>
+                                        <option value="Olímpico">Olímpico</option>
+                                        <option value="Laura Moreira">Laura Moreira</option>
+                                        <option value="São Bento">São Bento</option>
+                                        <option value="Cidade Satélite">Cidade Satélite</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label for=""><b></b></label>
+                                    <br>
+                                    <select class="form-control form-control-sm"><option>RUA</option></select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <label for="">Endereço</label>
+                                    <input type="text" class="form-control form-control-sm" value="" placeholder="" name="endereco_ocorrencia">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <label >Número</label>
+                                    <input type="text" class="form-control form-control-sm" placeholder="" name="tipo_ocorrencia">
+                                </div>
+                                <div class="col">
+                                    <label >Complemento</label>
+                                    <textarea class="form-control form-control-sm" placeholder='' name="motivo_ou_queixa"></textarea>
+                                </div>
+                                <div class="col">
+                                    <label >Ponto de ref.</label>
+                                    <textarea class="form-control form-control-sm" placeholder='' name="motivo_ou_queixa"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary" style="">Registrar</button>
+
+                    </div>
+                </form>
+            </div>
+
+            {% comment %} <div class="col-sm"></div> {% endcomment %}
+
+            <div class="col-sm div-conclusoes-chamados">
+                
+                <div class="divs-situacoes-chamados">
+                    <button type="button" class="btn btn-secondary btn-sm">Encerramento</button>
+                    <button type="button" class="btn btn-secondary btn-sm">Em fila</button>
+                    <button type="button" class="btn btn-secondary btn-sm">Em espera</button>
+                </div>
+                
+                <br>
+                <br>
+
+                <form class="">
+                    <div class='div-enviar-para'>
+                        <div class="col">
+                        <label for="inputPassword6">Enviar para</label>
+                        </div>
+                        {% comment %} <div class='col'> {% endcomment %}
+                        <select class="form-control form-control-sm ipt-enviar-para"><option></option></select>
+                        {% comment %} </div> {% endcomment %}
+                    </div>
+                    <br>
+                    <div class="" style="width:100%;">
+                    <button style="float:right;" type="button" class="btn btn-secondary btn-sm">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+    {% comment %} Large modal {% endcomment %}
+    <!-- Large modal -------------------------------------------------------------- -->
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <div class="modal-header">
+            {% comment %} <div class="row"> {% endcomment %}
+                <a class="navbar-brand" href="#">
+                    <img src="{% static './imagens/logo-samu.png' %}" width="100" height="56" class="d-inline-block align-top" alt="">
+                </a>
+
+                <h5 class="modal-title titulos-h5" style="width:100%; text-align:center;">
+                    SAMU 192 - CISSUL
+                    <br>
+                    Ficha de Atendimento Sistematizado
+                    <br>
+                    USA/USB
+                
+                </h5>
+                
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            {% comment %} </div> {% endcomment %}
+        </div>
+        
+        <div>
+            <div class="container container-large-modal">
+                <form action="{% url 'sistema:editar-ocorrencia' %}" method="POST" id="formulario-editar-ocorrencia-modal-grande">
+                <div class="row">
+                    <div class="col-sm">
+                        <label >BASE / VTR</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="" name="base_ou_vtr">
+                  
+                        
+                        <label>CLASSIFICAÇÃO DE RISCO</label>
+                        <br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label" for="inlineCheckbox1">Verde</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label" for="inlineCheckbox2">Amarelo</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label" >Vermelho</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label">Cinza</label>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                    <div class="row">
+                        <div class="col">
+                            <label >N° DA OCORRENCIA</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="" name="numero_ocorrencia" readonly>
+                        </div>
+                        <div class="col">
+                            <label >DATA</label>
+                            <input type="date" class="form-control form-control-sm" placeholder="" name="data_ocorrencia">
+                        </div>
+                    </div>
+                    <label >MÉDICO REGULADOR</label>
+                    <input type="text" class="form-control form-control-sm" placeholder="" name="medico_regulador">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm">
+                        <label style="width: 100%; text-align:center;">MOTIVO DA SOLICITAÇÃO</label>
+                        <br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label" for="inlineCheckbox1">Clínico</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label" for="inlineCheckbox2">Sirurgico</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label" >Obstétrico</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label">Psiquiátrico</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label">Pediátrico</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label">Transporte inter-hospitalar</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label">Outros</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="" name="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row terceira-grande-linha-modal-grande">
+                    <div class="col-sm">
+                        <label>LOCAL DA OCORRÊNCIA</label>
+
+                        <br>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label" for="inlineCheckbox1">Via pública</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label" for="inlineCheckbox2">Espaço público</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label" >Residência</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label">Rodovia</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" value="" name="classificacao_risco">
+                            <label class="form-check-label">Outros</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="" name="">
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row">
+                            <div class="col">
+                            <label for="">Endereço</label>
+                            <input type="text" class="form-control form-control-sm" value="" placeholder="" name="endereco_ocorrencia">
+                            </div>
+                            <div class="col">
+                            <label for="">Bairro</label>
+                            <select class="form-control form-control-sm" name="bairro_ocorrencia">
+                                <option>*** SELECIONE ***</option>
+                                <option class="option-subtitle" selected>Centro</option>
+                                <option value="Bairro Centro">Bairro Centro</option>
+                                <option class="option-subtitle" value="2">Zona Norte</option>
+                                <option value="31 de Março">31 de Março</option>
+                                <option value="Aeroporto">Aeroporto</option>
+                                <option value="Aparecida">Aparecida</option>
+                                <option value="Bairro dos Estados">Bairro dos Estados</option>
+                                <option value="São Francisco">São Francisco</option>
+                                <option class="option-subtitle" value="8">Zona Sul</option>
+                                <option value="13 de Setembro">13 de Setembro</option>
+                                <option value="Calungá">Calungá</option>
+                                <option value="Governador Aquilíno Mota">Governador Aquilíno Mota</option>
+                                <option value="São Vincente">São Vincente</option>
+                                <option value="Marechal Rondon - Bairro de uso militar">Marechal Rondon - Bairro de uso militar</option>
+                                <option class="option-subtitle" value="14">Zona Leste</option>
+                                <option value="Caçarí">Caçarí</option>
+                                <option value="Canarinho">Canarinho</option>
+                                <option value="Paraviana">Paraviana</option>
+                                <option value="São Pedro">São Pedro</option>
+                                <option class="option-subtitle" value="19">Zona Oeste</option>
+                                <option value="Asa Branca">Asa Branca</option>
+                                <option value="Alvorada">Alvorada</option>
+                                <option value="Professora Araceli Souto Maior">Professora Araceli Souto Maior</option>
+                                <option value="Bela Vista">Bela Vista</option>
+                                <option value="Buritis">Buritis </option>
+                                <option value="Caimbé">Caimbé </option>
+                                <option value="Cambará">Cambará</option>
+                                <option value="Caranã">Caranã </option>
+                                <option value="Centenário">Centenário </option>
+                                <option value="Cinturão Verde">Cinturão Verde</option>
+                                <option value="Jardim Equatorial">Jardim Equatorial</option>
+                                <option value="Senador Hélio Campos">Senador Hélio Campos</option>
+                                <option value="Jardim Caranã">Jardim Caranã</option>
+                                <option value="Jardim Primavera">Jardim Primavera</option>
+                                <option value="Jardim Floresta">Jardim Floresta</option>
+                                <option value="Jardim Tropical">Jardim Tropical</option>
+                                <option value="Jóquei Clube">Jóquei Clube</option>
+                                <option value="Liberdade">Liberdade</option>
+                                <option value="Murilo Teixeira">Murilo Teixeira</option>
+                                <option value="Mecejana">Mecejana</option>
+                                <option value="Nova Canaã">Nova Canaã</option>
+                                <option value="Nova Cidade">Nova Cidade</option>
+                                <option value="Operário">Operário</option>
+                                <option value="Pintolândia">Pintolândia</option>
+                                <option value="Piscicultura">Piscicultura</option>
+                                <option value="Pricumã">Pricumã</option>
+                                <option value="Raiar do Sol">Raiar do Sol</option>
+                                <option value="Doutor Aírton Rocha">Doutor Aírton Rocha</option>
+                                <option value="Doutor Silvio Botelho">Doutor Silvio Botelho</option>
+                                <option value="Doutor Silvio Leite">Doutor Silvio Leite</option>
+                                <option value="Santa Luzia">Santa Luzia</option>
+                                <option value="Santa Tereza">Santa Tereza</option>
+                                <option value="Tancredo Neves">Tancredo Neves</option>
+                                <option value="União">União</option>
+                                <option value="Olímpico">Olímpico</option>
+                                <option value="Laura Moreira">Laura Moreira</option>
+                                <option value="São Bento">São Bento</option>
+                                <option value="Cidade Satélite">Cidade Satélite</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="">Município</label>
+                                <select class="form-control form-control-sm" name="municipio_ocorrencia">
+                                    <option>*** SELECIONE ***</option>
+                                    <option value="Boa Vista">Boa Vista</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                            <label for="">N°</label>
+                            <input type="text" class="form-control form-control-sm" value="" placeholder="" name="numero_endereco_ocorrencia">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-1">
+                        <label>Situação do local</label>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Cena segura</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Cena insegura</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Difícil acesso</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Animais oferecem risco</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Rua sem identificação</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Incêndio</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Produto perigoso</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Aglomeração</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Terceiros oferecem risco</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Óleo na via</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-1">
+                        <label>Situação vítima</label>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Evasão</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Não localizada</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Vítima agressiva</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Presa as ferragens</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Outros</label>
+                                <input class="form-control form-control-sm" type="text" value="" name="outros_situacao_vitima">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label>Intercorrências</label>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">QTA no local</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">QTA no trajeto</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Chamado falso</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Múltiplas vítimas.</label>
+                                <label class="form-check-label" for="inlineCheckbox2">N° de vítimas</label>
+                                <input class="form-control form-control-sm" type="text" value="" name="outros_situacao_vitima">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label>Outros serviços no local</label>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Não</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Sim</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label" for="inlineCheckbox2">Quais?</label>
+                                <input class="form-control form-control-sm" type="text" value="" name="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label>Solicitação de apoio</label>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Não</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">USA</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">USB</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">190</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">193</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="">
+                                <label class="form-check-label" for="inlineCheckbox2">Outros</label>
+                                <input class="form-control form-control-sm" type="text" value="" name="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row nona-grande-linha-modal-grande">
+                    <div class="col-sm">
+                        <label>Dados da vítima</label>
+
+                        <div class="row">
+                            <div class="col">
+                            <label for="">Nome</label>
+                            <input type="text" class="form-control form-control-sm" value="" placeholder="" name="">
+                            </div>
+                            <div class="col">
+                            <label for="">Documento</label>
+                            <input type="text" class="form-control form-control-sm" value="" placeholder="" name="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                            <label for="">Idade</label>
+                            <input type="number" class="form-control form-control-sm" value="" placeholder="" name="">
+                            </div>
+                            <div class="col">
+                            <label for="">Sexo</label>
+                            <br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="" name="sexo_paciente">
+                                <label class="form-check-label" for="inlineCheckbox2">M</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="" name="sexo_paciente">
+                                <label class="form-check-label" for="inlineCheckbox2">F</label>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                            <label for="">Endereço</label>
+                            <input type="text" class="form-control form-control-sm" value="" placeholder="" name="">
+                            </div>
+                            <div class="col">
+                            <label for="">Bairro</label>
+                            <select class="form-control form-control-sm"><option>*** SELECIONE ***</option></select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm">
+                        <label style="visibility:hidden;">Dados da vítima</label> {% comment %} Ajuda no alinhamento {% endcomment %}
+                        <div class="row">
+                            <div class="col">
+                                <label for="">Cidade</label>
+                                <select class="form-control form-control-sm" name=""><option>*** SELECIONE ***</option></select>
+                            </div>
+                            <div class="col">
+                            <label for=""><b>Telefone</b></label>
+                            <input type="text" class="form-control form-control-sm" value="" placeholder="" name="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                            <label for=""><b>Acompanhante</b></label>
+                            <input type="text" class="form-control form-control-sm" value="" placeholder="" name="">
+                            </div>
+                            <div class="col">
+                            <label for=""><b>Documento</b></label>
+                            <input type="text" class="form-control form-control-sm" value="" placeholder="" name="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for=""><b>Grau de aproximação</b></label>
+                                <input type="text" class="form-control form-control-sm" value="" placeholder="" name="">
+                            </div>
+                            <div class="col">
+                            <label for=""><b>Telefone</b></label>
+                            <input type="text" class="form-control form-control-sm" value="" placeholder="" name="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row decima-grande-linha-modal-grande">
+                    <table class="table table-bordered table-sm">
+                        <thead style="text-align:center;">
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Inicial</th>
+                            <th scope="col">Atual</th>
+                            <th scope="col"></th>
+                            <th scope="col">Inicial</th>
+                            <th scope="col">Atual</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>PA:</td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td>DEXTRO:</td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>FC:</td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td>Sat.O2%:</td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>FR:</td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td>T°C:</td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-1">
+                        <label>Alergias</label>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Nega</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Não informado</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">S/ condições de informar</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Outra.</label>
+                            
+                                <label class="form-check-label" for="inlineCheckbox2">Qual?</label>
+                                <input class="form-control form-control-sm" type="text" value="" name="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label>Medicamentos em uso</label>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Nega</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Não informado</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">S/ condições de informar</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Sim.</label>
+                            
+                                <label class="form-check-label" for="inlineCheckbox2">Qual?</label>
+                                <textarea class="form-control form-control-sm"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label>Antecedentes pessoais</label>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">HAS</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Cardiopata</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">IAM anterior</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">AVE anterior</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Convulsões</label>
+                            </div>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Diabetes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Cirúrgico</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Asma/Bronquite/DPOC</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Nega tratamento anterior ou atual</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Sem condições de informar</label>
+                            </div>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Outros.</label>
+                                <label class="form-check-label" for="inlineCheckbox2">Quais?</label>
+                                <input class="form-control form-control-sm" type="text" value="" name="classificacao_risco">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row decima-quarta-grande-linha-modal-grande">
+                    <table class="table table-bordered table-sm">
+                        <thead style="text-align:center;">
+                        <tr>
+                            <th scope="col" colspan="3">ESCALA DE GLASGOW ADULTO</th>
+                            <th scope="col" colspan="3">ESCALA DE GLASGOW 0 A 2 ANOS</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ABERTURA OCULAR</td>
+                            <td>RESPOSTA VERBAL</td>
+                            <td>RESPOSTA MOTORA</td>
+                            <td>ABERTURA OCULAR</td>
+                            <td>RESPOSTA VERBAL</td>
+                            <td>RESPOSTA MOTORA</td>
+                        </tr>
+                        <tr>
+                            <td>4 - espontânea</td>
+                            <td>5 - orientado</td>
+                            <td>6 - obedece a comandos</td>
+                            <td>4 - espontânea</td>
+                            <td>5 - orientado/arrulha</td>
+                            <td>6 - obedece a comando verbal/movimento espontâneo</td>
+                        </tr>
+                        <tr>
+                            <td>3 - a voz</td>
+                            <td>4 - confuso</td>
+                            <td>5 - localiza a dor</td>
+                            <td>3 - a voz</td>
+                            <td>4 - confuso/inquieto, irritado e choroso</td>
+                            <td>5 - localiza a dor/retira o membro ao toque</td>
+                        </tr>
+                        <tr>
+                            <td>2 - a dor</td>
+                            <td>3 - palavras inapropriadas</td>
+                            <td>4 - retira a dor <br> 3 - flexão normal</td>
+                            <td>2 - a dor</td>
+                            <td>3 - palavras inapropriadas/chora em resposta a dor</td>
+                            <td>4 - retira o membro a dor <br> 3 - decortificação</td>
+                        </tr>
+                        <tr>
+                            <td>1 - ausente</td>
+                            <td>2 - sons/gemidos</td>
+                            <td>2 - extensão anormal</td>
+                            <td>1 - sem resposta</td>
+                            <td>2 - sons inespecíficos/geme em resposta a dor</td>
+                            <td>2 - descerebração</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>1 - ausente</td>
+                            <td>1 - ausente</td>
+                            <td></td>
+                            <td>1 - sem resposta</td>
+                            <td>1 - sem resposta</td>
+                        </tr>
+                        <tr>
+                            <td scope="col" colspan="3">
+                                TOTAL:
+                                <input class="form-control form-control-sm" type="text" value="" name="classificacao_risco">
+                            </td>
+                            <td scope="col" colspan="3">
+                                TOTAL:
+                                <input class="form-control form-control-sm" type="text" value="" name="classificacao_risco">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label>Mecanismo do trauma</label>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Não se aplica</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Queda de</label>
+                                <input class="form-control form-control-sm" type="number" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">m</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Encravamento</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Queda própria altura</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Acidente de trânsito</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">FAB</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">FPAF</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Queimadura</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Agressão</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label><u><b>1. Responsivo</b></u></label>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Sim</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Não</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label><b>Pulso se presente</b></label>
+                    </div>
+                    <div class="col-sm">
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Regular</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Cheio</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Irregular</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Fino</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2"><b>Ausente PCR</b></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm">
+                        <label><b>Tipo de acidente de trânsito:</b></label>
+
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Atropelamento</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Frontal</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox1">Lateral</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Traseiro</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Capotamento</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Rotacional</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <label><b>Posição da vítima no veículo:</b></label>
+
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Sem informação</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Condutor do veículo</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Acompanhante dianteiro</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Acompanhante traseiro</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Condutor ou garupa de moto</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <label><b>Equipamento de segurança:</b></label>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Não usava</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Sem informação</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Sinto de dois ou três pontos</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Capacete retirado pela equipe</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Capacete retirado por outros</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm">
+                        <label><b>Localização da vítima:</b></label>
+
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Sem ferragens</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Às ferragens</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Fora do veículo</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <label class="form-check-label" for="inlineCheckbox2">Deambulando?</label>
+                            <br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Sim</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Não</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="">
+                                <label class="form-check-label" for="inlineCheckbox2">Posição encontrada:</label>
+                                <input class="form-control form-control-sm" type="text" value="" name="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <label><b>Veículo da vítima:</b></label>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Carro</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Moto</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Caminhão</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Ônibus</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Van</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Bicicleta</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Sem informação</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Outro</label>
+                                <input class="form-control form-control-sm" type="text" value="" name="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <label><b>Outro envolvido:</b></label>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Carro</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Moto</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Caminhão</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Van</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Ônibus</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Bicicleta</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Pedestre</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Muro/Poste/Àrvore</label>
+                            </div>
+                        </div>
+                        <div class="row-sm">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="" name="classificacao_risco">
+                                <label class="form-check-label" for="inlineCheckbox2">Sem informação</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% csrf_token %}
+                </form>
+            </div>
+
+            <br>
+
+            <div style="text-align:center;" class="alert alert-warning" role="alert">
+                Este formulário está em <a href="#" class="alert-link">desenvolvimento!</a>.
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" form="formulario-editar-ocorrencia-modal-grande">Salvar alterações</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        </div>
+
+        </div>
+    </div>
+    </div>
+
+    <footer class="bg-light text-center text-lg-start" style="margin-top:100px;">
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+          © 2023 Copyright:
+          <a class="text-dark" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+
+    {% comment %} Modal de alerta {% endcomment %}
+    {% comment %} <div class="alert alert-warning mensagem-de-aviso">
+        <a href="#" class="close close-warning-msg">&times;</a>
+        {% if msg %}
+            {{msg}}
+        {% endif %}
+    </div> {% endcomment %}
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <script src="{% static 'js/pages-js/ficha-atendimento-samu.js' %}" defer></script>
+
+
+    <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+        });
+    }, false);
+    })();
+    </script>
+    </form>
+</body>
+</html>
