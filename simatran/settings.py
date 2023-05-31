@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 # import pymysql
 # pymysql.version_info = (1, 4, 3, "final", 0)
 # pymysql.install_as_MySQLdb()
@@ -42,6 +43,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'simatran.urls'
