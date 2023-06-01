@@ -60,7 +60,7 @@ $(".select-material").on("change",function(){
             url: protocoloParaHost + "/selecionar-material-js",
             data: {
                 'codigo_material': codigo_material,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 $("input[name='preco_med_ou_item']").val(response.valor_material)
@@ -88,7 +88,7 @@ $("#edicao-suprimentos-usados select[name='med_ou_item']").on("change",function(
             url: protocoloParaHost + "/selecionar-material-js",
             data: {
                 'codigo_material': codigo_material,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 $("#edicao-suprimentos-usados input[name='preco_med_ou_item']").val(response.valor_material)
@@ -118,7 +118,7 @@ $(".btn-consultar-suprimentos").on("click",function(){
             url: protocoloParaHost + "/selecionar-material-js",
             data: {
                 'codigo_material': codigo_material,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 ipt_codigo_material = $(".modal-sm-medicacao-ou-item input[name='codigo_material']")
@@ -147,7 +147,7 @@ $(".btn-editar-suprimentos").on("click",function(){
                 'codigo_material': codigo_material,
                 'nome_material': nome_material,
                 'valor_material': valor_material,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=="updated"){
@@ -169,7 +169,7 @@ $(".btn-excluir-suprimentos").on("click",function(){
             url: protocoloParaHost + "/excluir-material",
             data: {
                 'codigo_material': codigo_material,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=="deleted"){
@@ -192,7 +192,7 @@ $(".btn-edicao-ocorrencia").on("click", function(){
             url: protocoloParaHost + "/select-espec-ocorrencia",
             data: {
                 'numero_ocorrencia': numero_ocorrencia,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 //Partes de trazer os dados para o formulário:
@@ -229,7 +229,7 @@ $(".btn-excluir-ocorrencia").on("click",function(){
             url: protocoloParaHost + "/excluir-espec-ocorrencia",
             data: {
                 'numero_ocorrencia': numero_ocorrencia,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=="deleted"){
@@ -248,7 +248,7 @@ $(".btn-show-modal-vtr").on("click",function(){
             type: "POST",
             url: protocoloParaHost + "/selecionar-viaturas-js",
             data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 // Add trs with values
@@ -274,7 +274,7 @@ $("#btn-inserir-viatura").on("click", function (){
             data: {
                 'codigo_viatura': codigo_viatura,
                 'viatura': viatura,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=='inserted'){
@@ -296,7 +296,7 @@ $(document).on("click", ".btn-excluir-viatura", function (){
             url: protocoloParaHost + "/excluir-viatura-js",
             data: {
                 'codigo_viatura': codigo_viatura,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=='deleted'){
@@ -317,7 +317,7 @@ $(document).on("click", ".btn-consultar-viatura", function () {
             url: protocoloParaHost + "/selecionar-viatura-js",
             data: {
                 'codigo_viatura': codigo_viatura,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 $(".modal-sm-viatura input[name='codigo_viatura']").val(response[0].codigo_viatura)
@@ -346,7 +346,7 @@ $(document).on("click", ".btn-editar-viatura", function () {
                 'cod_vtr_old': cod_vtr_old,
                 'codigo_viatura': codigo_viatura,
                 'viatura': viatura,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 location.reload()
@@ -364,7 +364,7 @@ $(".btn-show-modal-turno").on("click", function (){
             type: "POST",
             url: protocoloParaHost + "/selecionar-turnos-js",
             data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 // Add trs with values
@@ -390,7 +390,7 @@ $("#btn-inserir-turno").on("click", function (){
             data: {
                 'codigo_turno': codigo_turno,
                 'turno': turno,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=='inserted'){
@@ -412,7 +412,7 @@ $(document).on("click", ".btn-excluir-turno", function (){
             url: protocoloParaHost + "/excluir-turno-js",
             data: {
                 'codigo_turno': codigo_turno,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=='deleted'){
@@ -433,7 +433,7 @@ $(document).on("click", ".btn-consultar-turno", function () {
             url: protocoloParaHost + "/selecionar-turno-js",
             data: {
                 'codigo_turno': codigo_turno,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 $(".modal-sm-turno input[name='codigo_turno']").val(response[0].codigo_turno)
@@ -462,7 +462,7 @@ $(document).on("click", ".btn-editar-turno", function () {
                 'codigo_turno_antigo': codigo_turno_antigo,
                 'codigo_turno': codigo_turno,
                 'turno': turno,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=="updated"){
@@ -483,7 +483,7 @@ $(".btn-show-modal-ocorrencia").on("click", function (){
             type: "POST",
             url: protocoloParaHost + "/selecionar-ocorrencias-js",
             data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 // Add trs with values
@@ -509,7 +509,7 @@ $("#btn-inserir-ocorrencia").on("click", function (){
             data: {
                 'codigo': codigo,
                 'tipo': tipo,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=='inserted'){
@@ -530,7 +530,7 @@ $(document).on("click", ".btn-consultar-ocorrencia", function () {
             url: protocoloParaHost + "/selecionar-ocorrencia-js",
             data: {
                 'codigo': codigo,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 $(".modal-sm-ocorrencia input[name='codigo']").val(response[0].codigo)
@@ -559,7 +559,7 @@ $(document).on("click", ".btn-editar-ocorrencia", function () {
                 'codigo_ocorrencia_antigo': codigo_ocorrencia_antigo,
                 'codigo': codigo,
                 'tipo': tipo,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=="updated"){
@@ -580,7 +580,7 @@ $(document).on("click", ".btn-excluir-ocorrencia", function (){
             url: protocoloParaHost + "/excluir-ocorrencia-js",
             data: {
                 'codigo': codigo,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=='deleted'){
@@ -601,7 +601,7 @@ $(".btn-show-categoria-ocorrencia").on("click", function(){
             type: "POST",
             url: protocoloParaHost + "/selecionar-categoria-ocorrencias-js",
             data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 // Add trs with values
@@ -617,7 +617,7 @@ $(".btn-show-categoria-ocorrencia").on("click", function(){
             type: "POST",
             url: protocoloParaHost + "/selecionar-ocorrencias-js",
             data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 // Add trs with values
@@ -648,7 +648,7 @@ $("#btn-inserir-categoria-ocorrencia").on("click", function (){
                 'codigo': codigo,
                 'codigo_ocorrencia': codigo_ocorrencia,
                 'categoria_ocorrencia': categoria_ocorrencia,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=='inserted'){
@@ -669,7 +669,7 @@ $(document).on("click", ".btn-excluir-categoria-ocorrencia", function (){
             url: protocoloParaHost + "/excluir-categoria-ocorrencia-js",
             data: {
                 'codigo': codigo,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response) {
                 if(response.status=='deleted'){
@@ -690,7 +690,7 @@ $(document).on("click", ".btn-consultar-categoria-ocorrencia", function () {
             url: protocoloParaHost + "/selecionar-categoria-ocorrencia-js",
             data: {
                 'codigo': codigo,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 $(".modal-sm-categoria-ocorrencia input[name='codigo']").val(response[0].codigo)
@@ -708,7 +708,7 @@ $(document).on("click", ".btn-consultar-categoria-ocorrencia", function () {
             type: "POST",
             url: protocoloParaHost + "/selecionar-ocorrencias-js",
             data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 // Add trs with values
@@ -742,7 +742,7 @@ $(document).on("click", ".btn-editar-categoria-ocorrencia", function () {
                 'codigo': codigo,
                 'categoria_ocorrencia': categoria_ocorrencia,
                 'codigo_ocorrencia': codigo_ocorrencia,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 if(response.status=="updated"){
@@ -769,7 +769,7 @@ $(document).ready(function (){
             type: "POST",
             url: protocoloParaHost + "/selecionar-viaturas-js",
             data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 for(x =0; x < response.length; x++){
@@ -785,7 +785,7 @@ $(document).ready(function (){
             type: "POST",
             url: protocoloParaHost + "/selecionar-turnos-js",
             data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 for(x =0; x < response.length; x++){
@@ -804,7 +804,7 @@ $(document).ready(function (){
             type: "POST",
             url: protocoloParaHost + "/selecionar-categoria-ocorrencias-js",
             data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 for(x =0; x < response.length; x++){
@@ -822,7 +822,7 @@ $(document).ready(function (){
             type: "POST",
             url: protocoloParaHost + "/selecionar-ocorrencias-js",
             data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
                 for(x =0; x < response.length; x++){
