@@ -24,12 +24,15 @@ SECRET_KEY = 'django-insecure-&nrod+mhuu5ssx16z_ukzr_5ot1mi5=%wf(&r(8tv$jjv-ava_
 DEBUG = True
 
 CSRF_TRUSTED_ORIGINS = [
+    'http://simatran.com.br',
+    'https://simatran.com.br',
     'https://simatran.azurewebsites.net',
     'http://192.168.1.48',
     'http://localhost'
 ]
 
 ALLOWED_HOSTS = [
+    'simatran.com.br',
     'simatran.azurewebsites.net',
     '192.168.1.48',
     'localhost'

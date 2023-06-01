@@ -120,7 +120,7 @@
                         <h5 class="titulos-h5">Ocorrência</h5>
 
                         {% comment %} Exemplo da linha (Referência) {% endcomment %}
-                        <div class="p1">
+                        <div class="p1 dv-add-ocorrencia">
                             <div class="row">
                                 <div class="col">
                                     <label for="">N° da ocorrência</label>
@@ -161,72 +161,43 @@
                             {% comment %} <button type="submit" class="btn btn-secondary">Registrar</button> {% endcomment %}
 
                         </div>
-                        {% comment %} Exemplo da linha (referência) {% endcomment %}
-                    </div>
-                    
-                    {% comment %} <div>
-                    </div> {% endcomment %}
-
-                    <div class="child-1-col-1-row">
-                        <h5 class="titulos-h5">
-                            Suprimentos
+                        
+                        <div class="form-row dv-btn-register-items-by-occurrences">
                             
                             <div class="add-more-supplies-button">
-                                <button type="button" class="btn btn-outline-secondary btn-sm btn-adicionar-carrinho-suprimento">
+                                <button type="submit" class=" btn btn-sm btn-secondary">Registrar</button>
+
+                                <button type="button" class="btn btn-danger btn-sm btn-mostrar-dv-carrinho-suprimento" data-toggle="modal" data-target=".modal-lg-carrinho-suprimentos">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
                                         <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z"/>
                                         <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
                                     </svg>
                                     <span>
-                                        Adicionar
+                                        Suprimentos
                                     </span>
                                 </button>
-
-                                <button type="button" class="btn btn-outline-secondary btn-sm btn-show-modal-ocorrencia" data-toggle="modal" data-target=".modal-lg-carrinho-suprimentos">
+    
+                                {% comment %} <button type="button" class="btn btn-outline-secondary btn-sm btn-show-modal-ocorrencia" data-toggle="modal" data-target=".modal-lg-carrinho-suprimentos">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
                                         <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/>
                                     </svg>
                                     <span>
                                         Ver
                                     </span>
-                                </button>
+                                </button> {% endcomment %}
                             </div>
-                        </h5>
-                        <div class="row">
-                            <div class="form-group col">
-                                <label for="">Item</label>
-
-                                <select class="form-control form-control-sm select-material" name="med_ou_item">
-                                    <option value="">*** SELECIONE ***</option>
-                                    {% for material in materials %}
-                                        <option value="{{material.codigo_material}}">{{material.nome_material}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group col">
-                                <label >Valor</label>
-                                <input type="text" class="form-control form-control-sm" placeholder="" name="preco_med_ou_item" readonly>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <label for="">Quantidade</label>
-                                <input type="number" min="0" class="form-control form-control-sm" value="0" placeholder="" name="quant_med_ou_item" onChange="produtoDoValorComQuantidade(this.value)">
-                            </div>
-                            <div class="col">
-                                <label for=""><b>Valor total</b></label>
-                                <input type="text" class="form-control form-control-sm" value="" placeholder="" name="produto_quant_com_item" readonly>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row dv-btn-register-items-by-occurrences">
-                            <button type="submit" class=" btn btn-secondary">Registrar</button>
-                            <button type="button" class=" btn btn-secondary">Limpar</button>   
+                            {% comment %} <button type="button" class=" btn btn-secondary">Limpar</button>    {% endcomment %}
                         </div>
                     </div>
+                    
+                    {% comment %} <div>
+                    </div> {% endcomment %}
+
+                    {% comment %} <div class="child-1-col-1-row">
+                    </div> {% endcomment %}
                 </div>
                 <div class="col-sm div-tabela-ocorrencias">
-                    <table class="table table-hover tabela-ocorrencias">
+                    <table class="table table-hover table-striped tabela-ocorrencias">
                         <thead>
                         <tr class="bg-danger">
                             <th scope="col">Ocorr.</th>

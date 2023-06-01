@@ -756,7 +756,51 @@ $(document).on("click", ".btn-editar-categoria-ocorrencia", function () {
 
 
 // Carrinho de Suprimentos:
+$(".btn-mostrar-dv-carrinho-suprimento").on("click", function (){
+    ipt_numero_ocorrencia = $(".dv-add-ocorrencia input[name='numero_ocorrencia']").val()
 
+    // Além desse, criar outro script que verifique se número ocorrência existe ou não para bloquear possíveis duplicatas
+    if(ipt_numero_ocorrencia == ""){
+        alert("Especifique para qual ocorrência será este suprimento, preencha o campo número de ocorrencia!")
+        return false
+    }
+    else{
+        $(".dv-abrigar-numero-ocorrencia").html('<input style="visibility:hidden; display:none" type="text" name="numero_ocorrencia" value="'+ ipt_numero_ocorrencia +'">')
+    }
+}); 
+
+$(".btn-adicionar-suprimento-no-carrinho").on("click", function (){
+    codigo_carrinho_suprimentos = $(".dv-add-suprimentos input[name='codigo_carrinho_suprimentos']").val()
+    numero_ocorrencia = $(".dv-add-suprimentos input[name='numero_ocorrencia']").val()
+    
+    codigo_material = $(".dv-add-suprimentos select[name='med_ou_item']").val()
+    valor_material = $(".dv-add-suprimentos input[name='preco_med_ou_item']").val()
+    quantidade = $(".dv-add-suprimentos input[name='quant_med_ou_item']").val()
+    valor_total = $(".dv-add-suprimentos input[name='produto_quant_com_item']").val()
+    // valor_final = 
+    
+    $.ajax(
+        {
+            type: "POST",
+            url: protocoloParaHost + "/inserir-carrinho-suprimento-js",
+            data: {
+                'codigo_carrinho_suprimentos': codigo_carrinho_suprimentos,
+                'numero_ocorrencia': numero_ocorrencia,
+                'codigo_material': codigo_material,
+                'valor_material': valor_material,
+                'quantidade': quantidade,
+                'valor_total': valor_total,
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
+            },
+            success: function(response){
+                if(response.status=="inserted"){
+                    console.log('inserido com sucesso')
+                    // location.reload()
+                }
+            }
+        }
+    );
+});
 // Carrinho de Suprimentos:
 
 
@@ -838,6 +882,10 @@ $(document).ready(function (){
 // Quando a pag. é carregada.
 // Ajax.
 
+// Quando a pag. é carregada (NÃO É AJAX):
+// codigo randomico dos carrinhos de suprimentos 
+$(".dv-abrigar-codigo-carrinho-suprimentos").html('<input style="display:none; visibility:hidden;" type="text" name="codigo_carrinho_suprimentos" value="'+ getRandomInt(0, 100000000) +'"></input>')
+// Quando a pag. é carregada (NÃO É AJAX).
 
 
 function produtoDoValorComQuantidade(val){
@@ -1049,6 +1097,13 @@ function formataReais($valor1, $valor2, $operacao) {
     // Por fim , retorna o resultado já formatado
     return $retorna;
 }
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
 function ajusteR(nr, casas) {
     const og = Math.pow(10, casas);
     return String(Math.trunc(nr * og) / og);

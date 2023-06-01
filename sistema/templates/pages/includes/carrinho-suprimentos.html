@@ -7,12 +7,50 @@
 
 {% block cabecalho_modal %}
     <div class="">
-        <h5 class="titulos-h5">Carrinho de suprimentos</h5>
+        <h5 class="titulos-h5">Adicionar Suprimentos</h5>
     </div>
 {% endblock %}
 
 {% block corpo_modal %}
     <div class="container">
+        <div class="dv-add-suprimentos">
+            <div class="row">
+                <div class="form-group col">
+                    <label for="">Item</label>
+
+                    <select class="form-control form-control-sm select-material" name="med_ou_item">
+                        <option value="">*** SELECIONE ***</option>
+                        {% for material in materials %}
+                            <option value="{{material.codigo_material}}">{{material.nome_material}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col">
+                    <label >Valor</label>
+                    <input type="text" class="form-control form-control-sm" placeholder="" name="preco_med_ou_item" readonly>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="">Quantidade</label>
+                    <input type="number" min="0" class="form-control form-control-sm" value="0" placeholder="" name="quant_med_ou_item" onChange="produtoDoValorComQuantidade(this.value)">
+                </div>
+                <div class="col">
+                    <label for=""><b>Valor total</b></label>
+                    <input type="text" class="form-control form-control-sm" value="" placeholder="" name="produto_quant_com_item" readonly>
+                </div>
+            </div>
+
+            <div class="dv-abrigar-codigo-carrinho-suprimentos"></div>
+
+            <div class="dv-abrigar-numero-ocorrencia"></div>
+
+            <button type="submit" class=" btn btn-sm btn-secondary btn-adicionar-suprimento-no-carrinho" style="margin-top:8px; margin-bottom:10px;">Adicionar</button>
+        </div>
+        
+        <hr>
+
+        <h5 class="titulos-h5">Descrição</h5>
         <table class="table table-hover tabela-categoria-ocorrencia">
             <thead>
             <tr class="bg-danger">
@@ -25,7 +63,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>JELCO 23</td>
+                    {% comment %} <td>JELCO 23</td>
                     <td>2</td>
                     <td>2,45</td>
                     <td>4,90</td>
@@ -34,7 +72,7 @@
                         <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target=".modal-sm-categoria-ocorrencia" value="'+ response[x].codigo +'">Editar</button>
                         <button type="button" class="btn btn-outline-danger btn-sm" value="'+ response[x].codigo +'">Excluir</button>
 
-                    </td>
+                    </td> {% endcomment %}
                 </tr>
             </tbody>
         </table>

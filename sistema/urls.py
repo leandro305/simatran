@@ -53,4 +53,6 @@ urlpatterns = [
     path('selecionar-categoria-ocorrencia-js', Views().selectCategoriaOcorrenciaJS, name='selecionar-categoria-ocorrencia-js'),
     path('editar-categoria-ocorrencia-js', Views().editarCategoriaOcorrenciaJS, name='editar-categoria-ocorrencia-js'),
 
+    path('inserir-carrinho-suprimento-js', Views().inserirCarrinhoSuprimentoJS, name='inserir-carrinho-suprimento-js'),
+
 ]

@@ -24,6 +24,8 @@ class Views(View):
         self.db = conn.connection()
 
     def dashboard(self, request):
+        return render(request, 'pages/dashboard/manutencao.html')
+
         #Instancia a própria class p\ poder usar os métodos
         self.views._set_map_rr_folium()
         mapa_rr_html = self.views._get_map_rr_folium_html()
@@ -392,6 +394,17 @@ class Views(View):
     def getCodAleatorio(self):
         return (randint(0,100000000))
     
+    def getCodAleatorioUnico(self, collection, codigo_collection):
+        rang = 100000000
+        for x in range(rang):
+            codigo_collection_x = (randint(0,rang))
+
+            documento = self.db['simatran'][collection].find({codigo_collection: codigo_collection_x})
+            documento = self.parse_json_v2(documento)
+
+            if len(documento) == 0:
+                return codigo_collection_x
+
     def alteracaoRelogio(self):
         pass
 
@@ -401,6 +414,9 @@ class Views(View):
 
     # Td relacionado ao custo por ocorrência
     def viewCustoPorOcorrencia(self, request):
+        return render(request, 'pages/dashboard/manutencao.html')
+
+
         # Pegar somente da data de hoje e jogar na página
 
         # especOcorrenciaToday = self.selectEspecOcorrenciaByOneDate(str(date.today()))
@@ -818,3 +834,38 @@ class Views(View):
     
         return JsonResponse({"status": "updated"})
     # Crud Cat. Ocorrencias.
+
+    #Crud Carrinho Suprimento:
+    def inserirCarrinhoSuprimentoJS(self, request):
+        codigo_carrinho_suprimentos = request.POST['codigo_carrinho_suprimentos']
+        numero_ocorrencia = request.POST['numero_ocorrencia']
+        codigo_material = request.POST['codigo_material']
+        # valor_material = request.POST['valor_material']
+        quantidade = request.POST['quantidade']
+        valor_total = request.POST['valor_total']
+
+        material = self.db['simatran'].material.find({'codigo_material': int(codigo_material)})
+        material = self.parse_json_v2(material)
+
+        # carrinho_suprimento = self.db['simatran'].carrinho_suprimentos.find({'codigo_carrinho_suprimentos': int(codigo_carrinho_suprimentos)})
+        # carrinho_suprimento = self.parse_json_v2(carrinho_suprimento)
+
+        filter={
+            'codigo_carrinho_suprimentos': codigo_carrinho_suprimentos,
+            'numero_ocorrencia': numero_ocorrencia,
+            'material': [
+                {
+                    'codigo_material': material[0]['codigo_material'],
+                    'nome_material': material[0]['nome_material'],
+                    'valor_material': material[0]['valor_material'],
+                    'quantidade': quantidade,
+                    'valor_total': valor_total
+                },
+                # {...}
+            ],
+            'valor_final': 'valor_final'
+        }
+        self.db['simatran'].carrinho_suprimentos.insert_one(filter)
+
+        return JsonResponse({'status': 'inserted'})
+    #Crud Carrinho Suprimento.
