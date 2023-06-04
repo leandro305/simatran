@@ -18,13 +18,18 @@ urlpatterns = [
 
     # Td relacionado ao custo por ocorrência daqui pra baixo
     path('custo-por-ocorrencia', Views().viewCustoPorOcorrencia, name='custo-por-ocorrencia'),
-    path('select-espec-ocorrencia', Views().selectEspecOcorrencia, name='select-espec-ocorrencia'),
+    path('select-espec-ocorrencia-js', Views().selectEspecOcorrenciaJS, name='select-espec-ocorrencia-js'),
     path('inserir-espec-ocorrencia', Views().inserirEspecOcorrencia, name='inserir-espec-ocorrencia'),
     path('excluir-espec-ocorrencia', Views().excluirEspecOcorrencia, name='excluir-espec-ocorrencia'),
     path('editar-espec-ocorrencia', Views().editarEspecOcorrencia, name='editar-espec-ocorrencia'),
+    # path('selecionar-material-espec-ocorrencia-js', Views().selecionarMaterialEspecOcorrenciaJS, name='selecionar-material-espec-ocorrencia-js'),
+    path('adicionar-material-espec-ocorrencia-js', Views().adicionarMaterialEspecOcorrenciaJS, name='adicionar-material-espec-ocorrencia-js'),
+    path('excluir-material-espec-ocorrencia-js', Views().excluirMaterialEspecOcorrenciaJS, name='excluir-material-espec-ocorrencia-js'),
+
 
     path('inserir-material', Views().inserirMaterial, name='inserir-material'),
     path('selecionar-material-js', Views().selectMaterialJs, name='selecionar-material-js'),
+    path('selecionar-materials-js', Views().selectMaterialsJS, name='selecionar-materials-js'),
     path('editar-material', Views().editarMaterial, name='editar-material'),
     path('excluir-material', Views().excluirMaterial, name='excluir-material'),
     # path('ambulancia', Views().viewAmbulancia, name='ambulancia'),
@@ -54,5 +59,7 @@ urlpatterns = [
     path('editar-categoria-ocorrencia-js', Views().editarCategoriaOcorrenciaJS, name='editar-categoria-ocorrencia-js'),
 
     path('inserir-carrinho-suprimento-js', Views().inserirCarrinhoSuprimentoJS, name='inserir-carrinho-suprimento-js'),
+    path('selecionar-carrinho-suprimento-js', Views().selectCarrinhoSuprimentoJs, name='selecionar-carrinho-suprimento-js'),
+    path('excluir-material-carrinho-suprimento-js', Views().excluirMaterialCarrinhoSuprimentoJS, name='excluir-material-carrinho-suprimento-js'),
 
 ]

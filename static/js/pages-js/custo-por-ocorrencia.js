@@ -63,8 +63,8 @@ $(".select-material").on("change",function(){
                 'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
-                $("input[name='preco_med_ou_item']").val(response.valor_material)
-                iptQuant = $("input[name='quant_med_ou_item']")
+                $("input[name='valor_material']").val(response.valor_material)
+                iptQuant = $("input[name='quantidade']")
 
                 if (iptQuant.val()=="0"){
                     iptQuant.val("1")
@@ -73,7 +73,7 @@ $(".select-material").on("change",function(){
                 // Calcular o valor total
                 multiplicacao = formataReais(response.valor_material, iptQuant.val(), "*")
             
-                $("input[name='produto_quant_com_item']").val(multiplicacao)
+                $("input[name='valor_total']").val(multiplicacao)
             }
         }
     );
@@ -182,6 +182,46 @@ $(".btn-excluir-suprimentos").on("click",function(){
 });
 
 
+function listarSuprimentosNaTabela(response){
+    // Limpar a tabela antes de atribuir qualquer coisa
+    $('.tabela-edicao-medicamento tbody').html("")
+
+    material = response[0].suprimentos.material
+    codigo_material_selecteds = []
+    for (x=0; x < material.length; x++){
+        codigo_material_selecteds.push(material[x].codigo_material)
+        $('.tabela-edicao-medicamento tbody').append('<tr class="tr-'+ x +'">        <td> <select name="codigo_material" id="'+ material[x].codigo_material +'"></select>        </td>  <td><input type="text" class="form-control form-control-sm" placeholder="" name="valor_material" value="'+ material[x].valor_material +'" readonly=""></td> <td><input type="number" min="0" class="form-control form-control-sm" placeholder="" name="quantidade" value="'+ material[x].quantidade +'" onchange="produtoDoValorComQuantidadeEdicaoMedicacaoUsada(this.value, '+ x +')"></td> <td><input type="text" class="form-control form-control-sm" placeholder="" name="valor_total" value="'+ material[x].valor_total +'" readonly=""></td>                                           <td style="display:flex; border:none;"><button type="button" class="btn btn-outline-secondary btn-sm btn-editar-material-espec-ocorrencia show-warning" value=""><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16"> <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/> </svg></button>                             <button type="button" class="btn btn-outline-danger btn-sm btn-excluir-material-espec-ocorrencia" value="'+ material[x].id +'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/> <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/> </svg></button></td></tr>')
+    }
+
+    $(".dv-mostra-valor-final").html('<button type="button" class="btn btn-sm btn-outline-success">V. Final: R$ '+ response[0].suprimentos.valor_final +' </button>')
+
+    $.ajax(
+        {
+            type: "POST",
+            url: protocoloParaHost + "/selecionar-materials-js",
+            data: {
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
+            },
+            success: function(response){
+                for (x=0; x < response.length; x++) {
+                    $('.tabela-edicao-medicamento select[name="codigo_material"]').append("<option value='"+ response[x].codigo_material +"'>"+ response[x].nome_material +"</option>")
+                }
+                
+                selects = $('.tabela-edicao-medicamento select[name="codigo_material"]')
+                for (sel = 0; sel < selects.length; sel++){
+                    for (opt = 0; opt < selects[sel].options.length; opt++){
+                        if (selects[sel].options[opt].value == selects[sel].id){
+                            selects[sel].options[opt].setAttribute("selected", "selected")
+                        }
+                    }
+                }
+            }
+        }
+    );
+
+    // Formulário de suprimentos
+    document.querySelector("#edicao-suprimentos-usados input[name='numero_ocorrencia']").value=response[0].numero_ocorrencia
+}
 $(".btn-edicao-ocorrencia").on("click", function(){
     numero_ocorrencia = this.value
     csrfmiddlewaretoken = $('[name=csrfmiddlewaretoken]').val()
@@ -189,7 +229,7 @@ $(".btn-edicao-ocorrencia").on("click", function(){
     $.ajax(
         {
             type: "POST",
-            url: protocoloParaHost + "/select-espec-ocorrencia",
+            url: protocoloParaHost + "/select-espec-ocorrencia-js",
             data: {
                 'numero_ocorrencia': numero_ocorrencia,
                 'csrfmiddlewaretoken': csrfmiddlewaretoken
@@ -203,20 +243,16 @@ $(".btn-edicao-ocorrencia").on("click", function(){
                 document.querySelector("#form-editar-espec-ocorrencia select[name='ambulancia_ocorrencia']").value = response[0].ambulancia_ocorrencia;
                 document.querySelector("#form-editar-espec-ocorrencia select[name='categoria_ocorrencia']").value = response[0].categoria_ocorrencia;
                 document.querySelector("#form-editar-espec-ocorrencia select[name='tipo_ocorrencia']").value = response[0].tipo_ocorrencia;
-                
-                document.querySelector("#edicao-suprimentos-usados select[name='med_ou_item']").value = response[0].med_ou_item;
-                document.querySelector("#edicao-suprimentos-usados input[name='preco_med_ou_item']").value = response[0].preco_med_ou_item;
-                document.querySelector("#edicao-suprimentos-usados input[name='quant_med_ou_item']").value = response[0].quant_med_ou_item;
-                document.querySelector("#edicao-suprimentos-usados input[name='produto_quant_com_item']").value = response[0].produto_quant_com_item;
-                
-                // Formulário de suprimentos
-                document.querySelector("#edicao-suprimentos-usados input[name='numero_ocorrencia']").value=response[0].numero_ocorrencia
-                
-                //Partes de trazer os dados para o formulário.
 
+
+                listarSuprimentosNaTabela(response)
             }
         }
     );
+}); $(".modal-lg-especificacao-ocorrencia").on("hidden.bs.modal",function(){
+    $(".tabela-edicao-medicamento tbody").html("")
+    $(".tabela-edicao-medicamento select[name='codigo_material']").html("")
+    $(".dv-mostra-valor-final").html("")
 });
 
 $(".btn-excluir-ocorrencia").on("click",function(){
@@ -767,18 +803,20 @@ $(".btn-mostrar-dv-carrinho-suprimento").on("click", function (){
     else{
         $(".dv-abrigar-numero-ocorrencia").html('<input style="visibility:hidden; display:none" type="text" name="numero_ocorrencia" value="'+ ipt_numero_ocorrencia +'">')
     }
-}); 
+}); $(".modal-lg-carrinho-suprimentos").on("hidden.bs.modal",function(){
+    $(".dv-mostra-valor-final").html("");
+});
 
 $(".btn-adicionar-suprimento-no-carrinho").on("click", function (){
     codigo_carrinho_suprimentos = $(".dv-add-suprimentos input[name='codigo_carrinho_suprimentos']").val()
     numero_ocorrencia = $(".dv-add-suprimentos input[name='numero_ocorrencia']").val()
     
-    codigo_material = $(".dv-add-suprimentos select[name='med_ou_item']").val()
-    valor_material = $(".dv-add-suprimentos input[name='preco_med_ou_item']").val()
-    quantidade = $(".dv-add-suprimentos input[name='quant_med_ou_item']").val()
-    valor_total = $(".dv-add-suprimentos input[name='produto_quant_com_item']").val()
+    codigo_material = $(".dv-add-suprimentos select[name='codigo_material']").val()
+    valor_material = $(".dv-add-suprimentos input[name='valor_material']").val()
+    quantidade = $(".dv-add-suprimentos input[name='quantidade']").val()
+    valor_total = $(".dv-add-suprimentos input[name='valor_total']").val()
     // valor_final = 
-    
+
     $.ajax(
         {
             type: "POST",
@@ -793,15 +831,145 @@ $(".btn-adicionar-suprimento-no-carrinho").on("click", function (){
                 'csrfmiddlewaretoken': csrfmiddlewaretoken
             },
             success: function(response){
-                if(response.status=="inserted"){
-                    console.log('inserido com sucesso')
-                    // location.reload()
+                selecionar_carrinho_suprimentos()
+            }
+        }
+    );
+});
+
+function selecionar_carrinho_suprimentos(){
+    $.ajax(
+        {
+            type: "POST",
+            url: protocoloParaHost + "/selecionar-carrinho-suprimento-js",
+            data: {
+                'codigo_carrinho_suprimentos': codigo_carrinho_suprimentos,
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
+            },
+            success: function(response){
+                if (response.length != 0) {
+                    $(".tabela-carrinho-suprimentos tbody").html("")
+                    for(x=0; x < response[0].material.length; x++){
+                        $(".tabela-carrinho-suprimentos tbody").append('<tr> <td>'+ response[0].material[x].nome_material +'</td> <td>'+ response[0].material[x].quantidade +'</td> <td>'+ response[0].material[x].valor_material +'</td> <td>'+ response[0].material[x].valor_total +'</td> <td> <button type="button" class="btn btn-outline-danger btn-sm excluir-material-carrinho-suprimento" value="'+ response[0].material[x].id +'">Excluir</button> </td> </tr>')
+                    }
+                    $(".dv-mostra-valor-final").html('<button type="button" class="btn btn-sm btn-outline-success">V. Final: R$ '+ response[0].valor_final +'</button>')
+
+                    // Esvaziar os inputs de adição depois de enviados
+                    $(".dv-add-suprimentos select[name='codigo_material']").val("")
+                    $(".dv-add-suprimentos input[name='valor_material']").val("")
+                    $(".dv-add-suprimentos input[name='quantidade']").val(0)
+                    $(".dv-add-suprimentos input[name='valor_total']").val("")
+                }
+                else if(response.length == 0){
+                    $(".tabela-carrinho-suprimentos tbody").html("")
+                    $(".dv-mostra-valor-final").html("")
+                }
+            }
+        }
+    );
+}
+
+$(document).on("click", ".excluir-material-carrinho-suprimento", function () {
+    codigo_carrinho_suprimentos = $(".dv-add-suprimentos input[name='codigo_carrinho_suprimentos']").val()
+    id = this.value
+    csrfmiddlewaretoken = $('[name=csrfmiddlewaretoken]').val()
+
+    $.ajax(
+        {
+            type: "POST",
+            url: protocoloParaHost + "/excluir-material-carrinho-suprimento-js",
+            data: {
+                'codigo_carrinho_suprimentos': codigo_carrinho_suprimentos,
+                'id': id,
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
+            },
+            success: function(response) {
+                if(response.status=='deleted'){
+                    selecionar_carrinho_suprimentos()
                 }
             }
         }
     );
 });
 // Carrinho de Suprimentos:
+
+// Suprimentos das ocorrências:
+$(document).on("click", ".btn-excluir-material-espec-ocorrencia", function (){
+    id = this.value
+    numero_ocorrencia = $(".modal-lg-especificacao-ocorrencia input[name='numero_ocorrencia']").val()
+    csrfmiddlewaretoken = $('[name=csrfmiddlewaretoken]').val()
+
+    $.ajax(
+        {
+            type: "POST",
+            url: protocoloParaHost + "/excluir-material-espec-ocorrencia-js",
+            data: {
+                'numero_ocorrencia': numero_ocorrencia,
+                'id': id,
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
+            },
+            success: function(response) {
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: protocoloParaHost + "/select-espec-ocorrencia-js",
+                        data: {
+                            'numero_ocorrencia': numero_ocorrencia,
+                            'csrfmiddlewaretoken': csrfmiddlewaretoken
+                        },
+                        success: function(response) {
+                            listarSuprimentosNaTabela(response)
+                        }
+                    }
+                );
+            }
+        }
+    );
+});
+
+$(document).on("click", ".btn-inserir-material-espec-ocorrencia", function (){
+    numero_ocorrencia = $(".modal-lg-especificacao-ocorrencia input[name='numero_ocorrencia']").val()
+    codigo_material = $(".modal-sm-especificacao-ocorrencia select[name='codigo_material']").val()
+    valor_material = $(".modal-sm-especificacao-ocorrencia input[name='valor_material']").val()
+    quantidade = $(".modal-sm-especificacao-ocorrencia input[name='quantidade']").val()
+    valor_total = $(".modal-sm-especificacao-ocorrencia input[name='valor_total']").val()
+    csrfmiddlewaretoken = $('[name=csrfmiddlewaretoken]').val()
+
+    console.log()
+
+    $.ajax(
+        {
+            type: "POST",
+            url: protocoloParaHost + "/adicionar-material-espec-ocorrencia-js",
+            data: {
+                'numero_ocorrencia': numero_ocorrencia,
+                'codigo_material': codigo_material,
+                'valor_material':valor_material,
+                'quantidade':quantidade,
+                'valor_total':valor_total,
+                'csrfmiddlewaretoken': csrfmiddlewaretoken
+            },
+            success: function(response) {
+                $(".modal-sm-especificacao-ocorrencia").hide()
+
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: protocoloParaHost + "/select-espec-ocorrencia-js",
+                        data: {
+                            'numero_ocorrencia': numero_ocorrencia,
+                            'csrfmiddlewaretoken': csrfmiddlewaretoken
+                        },
+                        success: function(response) {
+                            listarSuprimentosNaTabela(response)
+                        }
+                    }
+                );
+            }
+        }
+    );
+})
+// Suprimentos das ocorrências.
 
 
 // Quando a pag. é carregada:
@@ -890,30 +1058,33 @@ $(".dv-abrigar-codigo-carrinho-suprimentos").html('<input style="display:none; v
 
 function produtoDoValorComQuantidade(val){
     if(val!="0"){
-        preco_medicacao = $("input[name='preco_med_ou_item']").val()
+        preco_medicacao = $("input[name='valor_material']").val()
         produto = formataReais(val, preco_medicacao, "*")
-        $("input[name='produto_quant_com_item']").val(produto)
+
+        // console.log(produto)
+
+        $("input[name='valor_total']").val(produto)
     }
     if (val=="0"){
-        document.querySelector("#form-espec-ocorrencia select[name='med_ou_item']").value=""
-        $("input[name='preco_med_ou_item']").val("")
-        $("input[name='produto_quant_com_item']").val("")
+        document.querySelector("#form-espec-ocorrencia select[name='codigo_material']").value=""
+        $("input[name='valor_material']").val("")
+        $("input[name='valor_total']").val("")
     }
 }
-function produtoDoValorComQuantidadeEdicaoMedicacaoUsada(val){
+function produtoDoValorComQuantidadeEdicaoMedicacaoUsada(val, id_tr){
     if(val!="0"){
-        preco_medicacao = $("#edicao-suprimentos-usados input[name='preco_med_ou_item']").val()
+        preco_medicacao = $("#edicao-suprimentos-usados .tr-"+ id_tr +" input[name='valor_material']").val()
         produto = formataReais(val, preco_medicacao, "*")
-        $("#edicao-suprimentos-usados input[name='produto_quant_com_item']").val(produto)
+        $("#edicao-suprimentos-usados .tr-"+ id_tr +" input[name='valor_total']").val(produto)
     }
     if (val=="0"){
-        document.querySelector("#edicao-suprimentos-usados select[name='med_ou_item']").value=""
-        $("#edicao-suprimentos-usados input[name='preco_med_ou_item']").val("")
-        $("#edicao-suprimentos-usados input[name='produto_quant_com_item']").val("")
+        document.querySelector("#edicao-suprimentos-usados .tr-"+ id_tr +" select[name='codigo_material']").value=""
+        $("#edicao-suprimentos-usados .tr-"+ id_tr +" input[name='valor_material']").val("")
+        $("#edicao-suprimentos-usados .tr-"+ id_tr +" input[name='valor_total']").val("")
     }
 }
 
-//Operações c\ javascript
+// Funçoes auxiliares:
 function formataReais($valor1, $valor2, $operacao) {
     /*     function formataReais ($valor1, $valor2, $operacao)
     *
@@ -1109,3 +1280,14 @@ function ajusteR(nr, casas) {
     return String(Math.trunc(nr * og) / og);
 }
 
+$(document).on("click", ".show-warning",()=>{
+    $(".mensagem-de-aviso").show();
+    setTimeout(function(){
+        $(".mensagem-de-aviso").hide(); 
+    }, 2000);
+});
+
+$(document).on("click", ".close-warning-msg",()=>{
+    $(".mensagem-de-aviso").hide();
+});
+// Funçoes auxiliares.

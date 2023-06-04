@@ -14,6 +14,7 @@
             <div class="modal-footer">
                 {% comment %} {% block rodape_do_modal %}{% endblock %} {% endcomment %}
 
+                {% block rodape_left_item %}{% endblock rodape_left_item %}
                 {% block botao_enviar %}{% endblock %}
                 <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Fechar</button>
             </div>
@@ -36,7 +37,7 @@
             </div>
             <div class="modal-footer">
                 {% comment %} {% block rodape_do_modal %}{% endblock %} {% endcomment %}
-
+                {% comment %} {% block rodape_left_item %}{% endblock rodape_left_item %} {% endcomment %}
                 {% block botao_enviar_sm %}{% endblock %}
                 <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Fechar</button>
             </div>

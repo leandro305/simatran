@@ -28,10 +28,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Solicitante<span class="sr-only">(current)</span></a>
+                    <a class="nav-link show-warning" href="#">Solicitante<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Paciente</a>
+                    <a class="nav-link show-warning" href="#">Paciente</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -39,13 +39,13 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="#">Custo por ocorrência</a>
-                    <a class="dropdown-item" href="#">Medicação/Item</a>
+                    <a class="dropdown-item show-warning" href="#">Medicação/Item</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Viaturas</a>
+                    <a class="dropdown-item show-warning" href="#">Viaturas</a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Link1</a>
+                    <a class="nav-link show-warning disabled" href="#">Link1</a>
                 </li>
             </ul>
 
@@ -203,7 +203,7 @@
                             <th scope="col">Ocorr.</th>
                             <th scope="col">Tipo</th>
                             <th scope="col">Viatura</th>
-                            <th scope="col">V. total</th>
+                            <th scope="col">V. Final</th>
                             <th>Ação</th>
                         </tr>
                         </thead>
@@ -213,7 +213,7 @@
                                     <td>{{ o.numero_ocorrencia }}</td>
                                     <td>{{ o.tipo_ocorrencia }}</td>
                                     <td>{{ o.ambulancia_ocorrencia }}</td>
-                                    <td>{{ o.produto_quant_com_item }}</td>
+                                    <td>{{ o.suprimentos.valor_final }}</td>
                                     <td class="">
                                     <button type="button" class="btn btn-outline-secondary btn-sm btn-edicao-ocorrencia" data-toggle="modal" data-target=".modal-lg-especificacao-ocorrencia" value="{{ o.numero_ocorrencia }}">Editar</button>
                                     <button type="button" class="btn btn-outline-danger btn-sm btn-excluir-ocorrencia" value="{{ o.numero_ocorrencia }}">Excluir</button>
@@ -228,6 +228,10 @@
 
 
     </div>
+
+    {% comment %} Msgs: {% endcomment %}
+    {% include "../includes/alertas.html" %}
+    {% comment %} Msgs. {% endcomment %}
 
     {% comment %} Modals aqui: {% endcomment %}
     {% include "../includes/carrinho-suprimentos.html" %}

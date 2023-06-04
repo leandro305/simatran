@@ -24,7 +24,8 @@ class Views(View):
         self.db = conn.connection()
 
     def dashboard(self, request):
-        return render(request, 'pages/dashboard/manutencao.html')
+        # Para exibição da página em manutenção
+        # return render(request, 'pages/dashboard/manutencao.html')
 
         #Instancia a própria class p\ poder usar os métodos
         self.views._set_map_rr_folium()
@@ -262,7 +263,7 @@ class Views(View):
 
         return HttpResponseRedirect('/ficha-atendimento-samu?msg='+"Ocorrencia registrada com sucesso!")
     
-    def selectEspecOcorrencia(self, request):
+    def selectEspecOcorrenciaJS(self, request):
         if request.method=="POST":
             numero_ocorrencia = request.POST['numero_ocorrencia']
 
@@ -271,12 +272,8 @@ class Views(View):
 
             #Buscar no banco
             espec_ocorrencia = self.getOneOcorrencia(numero_ocorrencia)
-
             espec_ocorrencia = self.parse_json_v2(espec_ocorrencia)
-
-            # print(espec_ocorrencia)
             return JsonResponse(espec_ocorrencia, safe=False)
-            # pass
         
     def excluirOcorrencia(self, request):
         if request.method=="POST":
@@ -414,8 +411,8 @@ class Views(View):
 
     # Td relacionado ao custo por ocorrência
     def viewCustoPorOcorrencia(self, request):
-        return render(request, 'pages/dashboard/manutencao.html')
-
+        # Para exibição da página em manutenção
+        # return render(request, 'pages/dashboard/manutencao.html')
 
         # Pegar somente da data de hoje e jogar na página
 
@@ -435,10 +432,16 @@ class Views(View):
         categoria_ocorrencia = request.POST['categoria_ocorrencia']
         tipo_ocorrencia = request.POST['tipo_ocorrencia']
         
-        med_ou_item = request.POST['med_ou_item']
-        preco_med_ou_item = request.POST['preco_med_ou_item']
-        quant_med_ou_item = request.POST['quant_med_ou_item']
-        produto_quant_com_item = request.POST['produto_quant_com_item']
+        # med_ou_item = request.POST['med_ou_item']
+        # preco_med_ou_item = request.POST['preco_med_ou_item']
+        # quant_med_ou_item = request.POST['quant_med_ou_item']
+        # produto_quant_com_item = request.POST['produto_quant_com_item']
+
+        #Formatação dos campos
+        # [...]
+
+        carrinho_suprimento = self.db['simatran'].carrinho_suprimentos.find({'numero_ocorrencia': int(numero_ocorrencia)})
+        carrinho_suprimento = self.parse_json_v2(carrinho_suprimento)
 
         especOcorrencia = {
             'numero_ocorrencia': int(numero_ocorrencia),
@@ -447,19 +450,16 @@ class Views(View):
             'turno_ocorrencia':turno_ocorrencia,
             'categoria_ocorrencia':categoria_ocorrencia,
             'tipo_ocorrencia':tipo_ocorrencia,
-            
-            'med_ou_item': int(med_ou_item),
-            'preco_med_ou_item':preco_med_ou_item,
-            'quant_med_ou_item':quant_med_ou_item,
-            'produto_quant_com_item':produto_quant_com_item
+            "suprimentos": carrinho_suprimento[0]
         }
-        #Formatação dos campos
-        # [...]
 
         # return HttpResponse(especOcorrencia)
 
         #Inserir no respectivo db
         self.insertEspecOcorrencia(especOcorrencia)
+
+        filter = {"numero_ocorrencia": int(numero_ocorrencia)}
+        self.db['simatran'].carrinho_suprimentos.delete_one(filter=filter)
 
         return HttpResponseRedirect('/custo-por-ocorrencia')
 
@@ -479,6 +479,88 @@ class Views(View):
         numero_ocorrencia = request.POST['numero_ocorrencia']
         self.deleteEspecOcorrencia(numero_ocorrencia)
         return JsonResponse({'status': 'deleted'})
+    
+    def excluirMaterialEspecOcorrenciaJS(self, request):
+        id = request.POST['id']
+        numero_ocorrencia = request.POST['numero_ocorrencia']
+
+        especOcorrencia = self.db['simatran']['especOcorrencia'].find({"numero_ocorrencia": int(numero_ocorrencia)})
+        especOcorrencia = self.parse_json_v2(especOcorrencia)
+
+
+        sup = especOcorrencia[0]['suprimentos']
+        mat = sup['material']
+
+        for x, v in enumerate(mat):
+            if mat[x]['id'] == int(id):
+                mat.pop(x)
+                break
+
+        # Atualiza valor_final
+        valor_final = self.somarMaterials(mat)
+
+        sup['material'] = mat
+        sup['valor_final'] = valor_final
+
+        qr = {
+                "numero_ocorrencia": int(numero_ocorrencia)
+        }
+        filter={ "$set": {
+                'suprimentos': sup,
+            }
+        }
+        self.db['simatran'].especOcorrencia.update_one(qr, filter)
+        return JsonResponse({'status': 'deleted'})
+    
+    def adicionarMaterialEspecOcorrenciaJS(self, request):
+        numero_ocorrencia = request.POST['numero_ocorrencia']
+        codigo_material = request.POST['codigo_material']
+        valor_material = request.POST['valor_material']
+        quantidade = request.POST['quantidade']
+        valor_total = request.POST['valor_total']
+
+        material = self.db['simatran']['material'].find({"codigo_material": int(codigo_material)})
+        material = self.parse_json_v2(material)
+
+        especOcorrencia = self.db['simatran']['especOcorrencia'].find({"numero_ocorrencia": int(numero_ocorrencia)})
+        especOcorrencia = self.parse_json_v2(especOcorrencia)
+
+        mat = especOcorrencia[0]['suprimentos']['material']
+        mat.append({
+            "id": self.getCodAleatorio(),
+            "codigo_material": int(codigo_material),
+            "nome_material": material[0]["nome_material"],
+            "valor_material": valor_material,
+            "quantidade": quantidade,
+            "valor_total": valor_total
+        })
+
+        # Somar o valor_final
+        valor_final = self.somarMaterials(mat)
+
+
+        qr = {
+                "numero_ocorrencia": int(numero_ocorrencia)
+        }
+        filter={ "$set": {
+                'suprimentos': {
+                    "numero_ocorrencia": int(numero_ocorrencia),
+                    "material": mat,
+                    "valor_final": valor_final
+                }
+            }
+        }
+        self.db['simatran'].especOcorrencia.update_one(qr, filter)
+
+        return JsonResponse({"status": "inserted"})
+
+    # def selecionarMaterialEspecOcorrenciaJS(self, request):
+    #     codigo_ocorrencia = request.POST['codigo_ocorrencia']
+
+    #     especOcorrencia = self.db['simatran'].especOcorrencia.find({'codigo_ocorrencia': int(codigo_ocorrencia)})
+    #     especOcorrencia = self.parse_json_v2(especOcorrencia)
+    #     material = especOcorrencia[0]['suprimentos']['material']
+    #     return JsonResponse(material, safe=False)
 
     def inserirMaterial(self, request):
         nome_material = request.POST['nome_material']
@@ -515,10 +597,13 @@ class Views(View):
         codigo_material = request.POST['codigo_material']
 
         material = self.selectOneMaterial(codigo_material)
-
         json_material = self.parse_json(material)
-
         return JsonResponse(json_material)
+    
+    def selectMaterialsJS(self, request):
+        materials = self.db['simatran']['material'].find({})
+        materials = self.parse_json_v2(materials)
+        return JsonResponse(materials, safe=False)
     
     def deleteEspecOcorrencia(self, numero_ocorrencia):
         filter = {"numero_ocorrencia": int(numero_ocorrencia)}
@@ -611,7 +696,6 @@ class Views(View):
         codigo_viatura = request.POST['codigo_viatura']
 
         vtr = self.db['simatran'].viaturas.find({'codigo_viatura': int(codigo_viatura)})
-
         vtr = self.parse_json_v2(vtr)
 
         return JsonResponse(vtr, safe=False)
@@ -847,25 +931,106 @@ class Views(View):
         material = self.db['simatran'].material.find({'codigo_material': int(codigo_material)})
         material = self.parse_json_v2(material)
 
-        # carrinho_suprimento = self.db['simatran'].carrinho_suprimentos.find({'codigo_carrinho_suprimentos': int(codigo_carrinho_suprimentos)})
-        # carrinho_suprimento = self.parse_json_v2(carrinho_suprimento)
+        carrinho_suprimento = self.db['simatran'].carrinho_suprimentos.find({'codigo_carrinho_suprimentos': int(codigo_carrinho_suprimentos)})
+        carrinho_suprimento = self.parse_json_v2(carrinho_suprimento)
 
-        filter={
-            'codigo_carrinho_suprimentos': codigo_carrinho_suprimentos,
-            'numero_ocorrencia': numero_ocorrencia,
-            'material': [
-                {
-                    'codigo_material': material[0]['codigo_material'],
-                    'nome_material': material[0]['nome_material'],
-                    'valor_material': material[0]['valor_material'],
-                    'quantidade': quantidade,
-                    'valor_total': valor_total
-                },
-                # {...}
-            ],
-            'valor_final': 'valor_final'
-        }
-        self.db['simatran'].carrinho_suprimentos.insert_one(filter)
+        # Atualiza o carrinho_suprimentos, caso já exista suprimentos adicionados
+        if len(carrinho_suprimento) > 0:
+            qr = {
+                "codigo_carrinho_suprimentos": int(codigo_carrinho_suprimentos)
+            }
+
+            mat = carrinho_suprimento[0]['material']
+            # for x, v in enumerate(material):
+            mat.append({
+                'id': self.getCodAleatorio(),
+                'codigo_material': material[0]['codigo_material'],
+                'nome_material': material[0]['nome_material'],
+                'valor_material': material[0]['valor_material'],
+                'quantidade': quantidade,
+                'valor_total': valor_total
+            })
+
+            valor_final = self.somarMaterials(mat)
+
+            filter={ "$set": {
+                    'material': mat,
+                    'valor_final': valor_final
+                }
+            }
+            self.db['simatran'].carrinho_suprimentos.update_one(qr, filter)
+
+        # Inserir em carrinho_suprimentos, caso não exista suprimentos adicionados
+        elif len(carrinho_suprimento) == 0:
+            filter={
+                'codigo_carrinho_suprimentos': int(codigo_carrinho_suprimentos),
+                'numero_ocorrencia': int(numero_ocorrencia),
+                'material': [
+                    {
+                        'id': self.getCodAleatorio(),
+                        'codigo_material': material[0]['codigo_material'],
+                        'nome_material': material[0]['nome_material'],
+                        'valor_material': material[0]['valor_material'],
+                        'quantidade': quantidade,
+                        'valor_total': valor_total
+                    }
+                ],
+                'valor_final': valor_total
+            }
+            self.db['simatran'].carrinho_suprimentos.insert_one(filter)
 
         return JsonResponse({'status': 'inserted'})
+    
+    def selectCarrinhoSuprimentoJs(self, request):
+        codigo_carrinho_suprimentos = request.POST['codigo_carrinho_suprimentos']
+
+        carrinho_suprimentos = self.db['simatran'].carrinho_suprimentos.find({'codigo_carrinho_suprimentos':int(codigo_carrinho_suprimentos)})
+        carrinho_suprimentos = self.parse_json_v2(carrinho_suprimentos)
+
+        return JsonResponse(carrinho_suprimentos, safe=False)
+    
+    def excluirMaterialCarrinhoSuprimentoJS(self, request):
+        codigo_carrinho_suprimentos = request.POST['codigo_carrinho_suprimentos']
+        id = request.POST['id']
+
+        carrinho_suprimento = self.db['simatran'].carrinho_suprimentos.find({'codigo_carrinho_suprimentos': int(codigo_carrinho_suprimentos)})
+        carrinho_suprimento = self.parse_json_v2(carrinho_suprimento)
+
+        mat = carrinho_suprimento[0]['material']
+
+        for x, v in enumerate(mat):
+            if len(mat) == 1:
+                filter = {"codigo_carrinho_suprimentos": int(codigo_carrinho_suprimentos)}
+                self.db['simatran'].carrinho_suprimentos.delete_one(filter=filter)
+
+            if mat[x]['id'] == int(id):
+                mat.pop(x)
+                break
+
+        # Atualizar valor_final
+        valor_final = self.somarMaterials(mat)
+
+        qr = {
+                "codigo_carrinho_suprimentos": int(codigo_carrinho_suprimentos)
+        }
+        filter={ "$set": {
+                'material': mat,
+                'valor_final': valor_final
+            }
+        }
+        self.db['simatran'].carrinho_suprimentos.update_one(qr, filter)
+
+        return JsonResponse({'status': 'deleted'})
+
     #Crud Carrinho Suprimento.
+
+    def somarMaterials(self, mat):
+        valores_total = []
+        valor_final = 0
+        for x, v in enumerate(mat):
+            v_t = mat[x]['valor_total'].replace(",", ".")
+            valores_total.append(float(v_t))
+        valor_final = sum(valores_total)
+        # Arredondar o valor_final se for o caso
+        valor_final = "%.2f" % valor_final
+        return valor_final
