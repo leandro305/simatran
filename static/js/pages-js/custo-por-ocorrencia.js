@@ -71,7 +71,7 @@ $(".select-material").on("change",function(){
                 }
 
                 // Calcular o valor total
-                multiplicacao = formataReais(response.valor_material, iptQuant.val(), "*")
+                multiplicacao = formatBrazilianMoney(response.valor_material, iptQuant.val(), "*")
             
                 $("input[name='valor_total']").val(multiplicacao)
             }
@@ -99,7 +99,7 @@ $("#edicao-suprimentos-usados select[name='med_ou_item']").on("change",function(
                 }
 
                 // Calcular o valor total
-                multiplicacao = formataReais(response.valor_material, iptQuant.val(), "*")
+                multiplicacao = formatBrazilianMoney(response.valor_material, iptQuant.val(), "*")
             
                 $("#edicao-suprimentos-usados input[name='produto_quant_com_item']").val(multiplicacao)
             }
@@ -1059,9 +1059,11 @@ $(".dv-abrigar-codigo-carrinho-suprimentos").html('<input style="display:none; v
 function produtoDoValorComQuantidade(val){
     if(val!="0"){
         preco_medicacao = $("input[name='valor_material']").val()
-        produto = formataReais(val, preco_medicacao, "*")
 
-        // console.log(produto)
+        // console.log(val)
+        // console.log(preco_medicacao)
+
+        produto = formatBrazilianMoney(val, preco_medicacao, "*")
 
         $("input[name='valor_total']").val(produto)
     }
@@ -1074,7 +1076,7 @@ function produtoDoValorComQuantidade(val){
 function produtoDoValorComQuantidadeEdicaoMedicacaoUsada(val, id_tr){
     if(val!="0"){
         preco_medicacao = $("#edicao-suprimentos-usados .tr-"+ id_tr +" input[name='valor_material']").val()
-        produto = formataReais(val, preco_medicacao, "*")
+        produto = formatBrazilianMoney(val, preco_medicacao, "*")
         $("#edicao-suprimentos-usados .tr-"+ id_tr +" input[name='valor_total']").val(produto)
     }
     if (val=="0"){
@@ -1184,18 +1186,25 @@ function formataReais($valor1, $valor2, $operacao) {
         
         // 2 : 0,99 centavos
         case 2:
-            $retorna = "0,"+$resultado;
+            $t = $valor1 * $valor2
+            if ($t != $resultado){
+                $retorna = "0,"+$resultado;
+            }else {
+                $retorna = $resultado+",00"
+            }
+
             break;
 
         // 3 : 9,99 reais
         case 3:
-            // console.log($resultado)
 
             $d1 = $resultado.substring(0,1);
             $d2 = $resultado.substring(1,3);
 
-            // console.log($d1)
-            // console.log($d2)
+            console.log($d1)
+            console.log($d2)
+
+            
 
             $retorna = $d1+","+$d2;
             break;
@@ -1267,6 +1276,28 @@ function formataReais($valor1, $valor2, $operacao) {
 
     // Por fim , retorna o resultado já formatado
     return $retorna;
+}
+
+function formatBrazilianMoney(valor1, valor2, operacao){
+    valor1 = String(valor1)
+    valor2 = String(valor2)
+
+    var rawPrice = parseInt(valor1.replace(/[.,]/g, ''));
+    var rawPrice2 = parseInt(valor2.replace(/[.,]/g, ''));
+
+    if (operacao=="*"){
+        var total = (rawPrice * rawPrice2 / 100);
+    }
+
+    console.log(valor1)
+    console.log(valor2)
+    console.log(total)
+
+    var resultado = `${total.toLocaleString('pt-BR', { style: 'decimal', useGrouping: 'true', minimumFractionDigits: '2', maximumFractionDigits: '2' })}`
+
+    console.log('R$' + resultado)
+
+    return resultado
 }
 
 function getRandomInt(min, max) {
