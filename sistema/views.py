@@ -16,6 +16,7 @@ from bson import json_util
 import json
 from geopy.geocoders import Nominatim
 
+
 class Views(View):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
@@ -410,6 +411,7 @@ class Views(View):
 
 
     # Td relacionado ao custo por ocorrência
+
     def viewCustoPorOcorrencia(self, request):
         # Para exibição da página em manutenção
         # return render(request, 'pages/dashboard/manutencao.html')

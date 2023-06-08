@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sistema.apps.SistemaConfig',
-    # 'usuarios.apps.UsuariosConfig'
+    'usuarios.apps.UsuariosConfig'
 ]
 
 MIDDLEWARE = [
@@ -67,7 +67,7 @@ ROOT_URLCONF = 'simatran.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [], #aqui vou ter que informar qual pasta ele deve procurar pelos templates que vou usar
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], #aqui vou ter que informar qual pasta ele deve procurar pelos templates que vou usar (por exemplo, qual arquivo html ele vai usar para fazer login/cadastro)
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -156,6 +156,6 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Configurações de autenticação
-LOGIN_REDIRECT_URL='dashboard'
+LOGIN_REDIRECT_URL='sistema:custo-por-ocorrencia'
 LOGOUT_REDIRECT_URL='login'
 URL_LOGIN='login'

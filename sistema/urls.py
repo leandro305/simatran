@@ -1,3 +1,7 @@
+# Autenticações:
+from django.contrib.auth.decorators import login_required
+#Autenticações.
+
 from django.urls import path
 
 # Importando o arquivo de views
@@ -6,6 +10,7 @@ from .views import Views
 app_name="sistema"
 
 urlpatterns = [
+
     path('dashboard/', Views().dashboard, name='dashboard'),
     path('dashboard/filtro-por-periodo', Views().filterByPeriod, name='filtro_por_periodo'),
     
@@ -17,7 +22,7 @@ urlpatterns = [
     # path('editar-ocorrencia', Views().editarOcorrencia, name='editar-ocorrencia'),
 
     # Td relacionado ao custo por ocorrência daqui pra baixo
-    path('custo-por-ocorrencia', Views().viewCustoPorOcorrencia, name='custo-por-ocorrencia'),
+    path('custo-por-ocorrencia', login_required(Views().viewCustoPorOcorrencia), name='custo-por-ocorrencia'),
     path('select-espec-ocorrencia-js', Views().selectEspecOcorrenciaJS, name='select-espec-ocorrencia-js'),
     path('inserir-espec-ocorrencia', Views().inserirEspecOcorrencia, name='inserir-espec-ocorrencia'),
     path('excluir-espec-ocorrencia', Views().excluirEspecOcorrencia, name='excluir-espec-ocorrencia'),
