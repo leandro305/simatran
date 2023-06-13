@@ -28,12 +28,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link show-warning" href="#">Solicitante<span class="sr-only">(current)</span></a>
+                    <a class=" show-warning" href="#">
+                        <button type="button" class="btn btn-sm btn-light btn-indicadores">
+                            <span>Solicitante</span>
+                        </button>
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link show-warning" href="#">Paciente</a>
-                </li>
-                <li class="nav-item dropdown">
+                {% comment %} <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Ocorrencia
                     </a>
@@ -43,14 +44,32 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item show-warning" href="#">Viaturas</a>
                     </div>
-                </li>
-                <li class="nav-item">
+                </li> {% endcomment %}
+                {% comment %} <li class="nav-item">
                     <a class="nav-link show-warning disabled" href="#">Link1</a>
+                </li> {% endcomment %}
+                <li class="nav-item">
+                    <a class="" target="_blank" rel="noopener noreferrer"  href="https://app.powerbi.com/view?r=eyJrIjoiNTdhZGFhZWUtNTVjZS00YzA4LWFiMTQtMmNlMGYwN2M3MGVkIiwidCI6IjJiMjExZGMzLWFhZTEtNDJhOS1iMWNkLWY0Njc0NzNkMjVmMyJ9">
+                        <button type="button" class="btn btn-sm btn-light btn-indicadores">
+                            <span>
+                                Indicadores
+                            </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-bar-graph-fill" viewBox="0 0 16 16">
+                                <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm-2 11.5v-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-2.5.5a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1zm-3 0a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-1z"/>
+                            </svg>
+                        </button>
+                    </a>
                 </li>
 
                 {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/accounts/logout">Sair</a>
+                <li class="nav-item user-is-superuser-{{user.is_superuser}}">
+                    <a class="" href="/accounts/logout">
+                        <button type="button" class="btn btn-sm btn-light btn-indicadores">
+                            <span>
+                                Sair
+                            </span>
+                        </button>
+                    </a>
                 </li>
                 {% endif %}
             </ul>
