@@ -11,6 +11,8 @@ app_name="sistema"
 
 urlpatterns = [
 
+    path('', login_required(Views().viewCustoPorOcorrencia), name='simatran'),
+
     path('dashboard/', Views().dashboard, name='dashboard'),
     path('dashboard/filtro-por-periodo', Views().filterByPeriod, name='filtro_por_periodo'),
     
