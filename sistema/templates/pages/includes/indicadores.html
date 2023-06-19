@@ -1,0 +1,17 @@
+{% extends '../modals/modals.html' %}
+
+{% load static %}
+
+{% block modal_path %}indicadores{% endblock %}
+
+{% block cabecalho_modal %}
+    <div class="">
+        <h5 class="titulos-h5">Indicadores</h5>
+    </div>
+{% endblock %}
+
+{% block corpo_modal %}
+    <div class="container">
+        <iframe height="600px" width="100%" src="https://app.powerbi.com/view?r=eyJrIjoiNTdhZGFhZWUtNTVjZS00YzA4LWFiMTQtMmNlMGYwN2M3MGVkIiwidCI6IjJiMjExZGMzLWFhZTEtNDJhOS1iMWNkLWY0Njc0NzNkMjVmMyJ9" title="Iframe indicadores"></iframe>
+    </div>
+{% endblock %}

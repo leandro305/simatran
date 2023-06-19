@@ -1321,4 +1321,3 @@ $(document).on("click", ".show-warning",()=>{
 $(document).on("click", ".close-warning-msg",()=>{
     $(".mensagem-de-aviso").hide();
 });
-// Funçoes auxiliares.
