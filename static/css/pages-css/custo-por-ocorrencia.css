@@ -2,6 +2,7 @@
     padding: 0.1px;
     margin: 0.1px;
 }
+
 #time {
     margin-top: revert !important;
 }
@@ -98,3 +99,20 @@
     right: 10px;
 }
 /* Msgs. */
+
+/* Indicadores: */
+.modal-lg-indicadores .modal-header {
+    display: none;
+}
+.modal-lg-indicadores {
+    zoom: 1.20;
+}
+.modal-lg-indicadores .modal-content {
+    background-color: #f8f9fa;
+    /* background-color: transparent; */
+    border: none;
+}
+.modal-lg-indicadores .modal-footer {
+    display: none;
+}
+/* Indicadores. */
