@@ -108,9 +108,21 @@
     zoom: 1.20;
 }
 .modal-lg-indicadores .modal-content {
-    background-color: #f8f9fa;
-    /* background-color: transparent; */
+    /* background-color: #f8f9fa; */
+    background-color: transparent;
     border: none;
+    /* transition: 2s; */
+}
+
+.modal-lg-indicadores .modal-content iframe {
+    transition: 1s;
+}
+.modal-lg-indicadores .modal-content iframe:hover {
+    box-shadow: 10px 10px 15px rgba(0,0,0,0.3), -10px -10px 15px rgba(0,0,0,0.3);
+}
+
+.modal-lg-indicadores .modal-content:hover {
+    /* background-color: white; */
 }
 .modal-lg-indicadores .modal-footer {
     display: none;
