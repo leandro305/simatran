@@ -1,5 +1,5 @@
 ## Simatran
-- Aplicativo para gerenciamento e análise de trânsito em Boa Vista
+- Aplicativo para cálculo dos custos das ocorrências p/ o pessoal do SAMU em Boa Vista!
 
 ## Página inicial
 Visão geral da aplicação:
