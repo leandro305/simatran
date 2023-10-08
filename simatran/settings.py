@@ -35,7 +35,8 @@ ALLOWED_HOSTS = [
     'simatran.com.br',
     'simatran.azurewebsites.net',
     '192.168.1.48',
-    'localhost'
+    'localhost',
+    '127.0.0.1'
 ]
 
 # Application definition
@@ -104,7 +105,7 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': 'simatran',
         'CLIENT': {
-            'host': 'mongodb+srv://leandro305:95991374293@cluster0.4uli0ht.mongodb.net/'
+            'host': 'mongodb+srv://leandro305:95991558285@cluster0.4erz4.mongodb.net/'
         }
     }
 }

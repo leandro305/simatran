@@ -1289,13 +1289,13 @@ function formatBrazilianMoney(valor1, valor2, operacao){
         var total = (rawPrice * rawPrice2 / 100);
     }
 
-    console.log(valor1)
-    console.log(valor2)
-    console.log(total)
+    // console.log(valor1)
+    // console.log(valor2)
+    // console.log(total)
 
     var resultado = `${total.toLocaleString('pt-BR', { style: 'decimal', useGrouping: 'true', minimumFractionDigits: '2', maximumFractionDigits: '2' })}`
 
-    console.log('R$' + resultado)
+    // console.log('R$' + resultado)
 
     return resultado
 }
