@@ -9,7 +9,7 @@ Visão geral da aplicação:
 - Sob revisão.
 
 ## Situação
-- Desenvolvimento - (18/05/2023)
+- Desenvolvimento - (01/10/2023)
 
 ## Tecnologias
 - Python (Django)
