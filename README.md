@@ -16,7 +16,7 @@ Visão geral da aplicação:
 - JavaScript
 - Html/CSS (Bootstrap)
 
-## Template Principal
+## Template Principal:
 ![](./static/repo/Sem-título.jpg)
 
 ## Contato:
