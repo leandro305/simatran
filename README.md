@@ -17,7 +17,7 @@ Visão geral da aplicação:
 - Html/CSS (Bootstrap)
 
 ## Template Principal
-![](./simatran/static/repo/Sem título.jpg)
+![](./simatran/static/repo/Sem-título.jpg)
 
 ## Contato:
 | Integrante | Usuário Git | Email para Contato |
